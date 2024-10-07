@@ -9,11 +9,16 @@ let router = express.Router();
 // GET /user?username=”username”
 router.get("/", async function (req, res) {
 
+    if (!req.query || !req.query.hasOwnProperty('username')) {
+        res.status(400).json({error: "Please enter a username"});
+        return;
+    }
+
+    const username = req.query.username;
     // 200 { username: “username”, inLobby: true }
     // 404 { error: “this user does not exist” }
-    // 400 { error: “Please enter a username”}
 
-    res.json({message: "user"}); 
+    res.status(200).json({message: `Your username is: ${username}`}); 
 });
 
 // POST user/verfiyUser
