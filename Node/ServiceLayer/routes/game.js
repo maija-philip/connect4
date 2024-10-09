@@ -6,8 +6,8 @@
 
 let express = require("express");
 const router = express.Router();
-const GameLogic = require("../../BusinessLogic/game.js");
-const game = new GameLogic();
+const BusinessLayer = require("../../BusinessLogic/exports.js");
+const businessLayer = new BusinessLayer();
 
 
 // GET /game/{gameId}
@@ -54,7 +54,7 @@ router.post("/:gameId/takeTurn", async function (req, res) {
         return;
     } 
     
-    let validMove = game.validateMove(req.body.xMove, req.body.yMove)
+    let validMove = businessLayer.validateMove(req.body.xMove, req.body.yMove)
     if (!validMove.valid) {
         res.status(400).json({ error: "Must be a valid move. Board is 7x6 tiles and you can not move on top of other tiles"});
         return;
