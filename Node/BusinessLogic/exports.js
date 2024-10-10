@@ -11,4 +11,6 @@ module.exports = function () {
     // make sure the move is within the board and rules
     this.validateMove = (x, y) => { return move(x, y) };
 
+
+    
 }
