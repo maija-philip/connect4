@@ -1,7 +1,7 @@
 {
-  "name": "node",
+  "name": "connect4service",
   "version": "1.0.0",
-  "main": "server.js",
+  "main": "./ServiceLayer/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./ServiceLayer/server.js",
@@ -13,5 +13,6 @@
   "dependencies": {
     "express": "^4.21.0",
     "nodemon": "^3.1.7"
-  }
+  },
+  "private": true
 }
