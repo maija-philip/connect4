@@ -24,4 +24,4 @@ app.use("/lobby", lobbyRouter);
 app.use("/game", gameRouter);
 
 app.listen(8080);
-console.log("Express started on port 8282");
+console.log("Express started on port 8080");
