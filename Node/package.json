@@ -4,8 +4,8 @@
   "main": "./ServiceLayer/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./ServiceLayer/server.js",
-    "dev": "nodemon ./ServiceLayer/server.js"
+    "start": "node --env-file=.env ./ServiceLayer/server.js",
+    "dev": "nodemon --env-file=.env ./ServiceLayer/server.js"
   },
   "author": "Maija Philip",
   "license": "ISC",

@@ -1,4 +1,110 @@
 a {
-    color: var(--white);
+  color: var(--white);
+}
+.noUnderline {
+  text-decoration: none;
 }
 
+/* INPUTS */
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+input {
+  width: 100%;
+  display: block;
+  background-color: var(--background-variant);
+  border: none;
+  border-radius: 100px;
+  outline: none;
+
+  color: var(--white);
+  font-family: "Ubuntu", sans-serif;
+  font-size: 1em;
+  padding: 1em 2em;
+}
+input::placeholder {
+  color: var(--white);
+  opacity: 0.5;
+}
+
+.inputWithIcon {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  background-color: var(--background-variant);
+  border: none;
+  border-radius: 100px;
+  outline: none;
+}
+
+.inputWithIcon input {
+  display: inline;
+  width: 100%;
+}
+
+.inputWithIcon div {
+  margin: 0 15px 0 10px;
+}
+
+form > div {
+  margin: 40px 0;
+}
+
+/* BUTTON */
+input[type="submit"],
+input[type="button"],
+button,
+.button {
+  background-color: var(--purple);
+  width: auto;
+  margin: auto;
+
+  display: block;
+  border: none;
+  border-radius: 100px;
+  outline: none;
+
+  color: var(--white);
+  font-family: "Ubuntu", sans-serif;
+  font-weight: bold;
+  font-size: 1em;
+  padding: 1em 2em;
+}
+
+/* LOGIN PAGE + CREATE ACCOUNT */
+.loginPageWrap {
+  width: 60%;
+  margin: 10vh auto;
+  text-align: center;
+}
+.loginPageWrap .logo {
+  background-image: url("../media/logo.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 7em;
+  height: 7em;
+  margin: auto;
+}
+.createPageWrap .logo, .lobbyWrap .logo {
+    width: 5em;
+    height: 5em;
+}
+.loginPageWrap h1 {
+  font-size: 3em;
+  color: var(--pink);
+}
+.loginPageWrap span {
+  color: var(--yellow);
+}
+
+/* LOBBY PAGE */
+.lobbyWrap {
+    margin-top: 3em;
+}

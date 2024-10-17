@@ -25,18 +25,20 @@ router.get("/", async function (req, res) {
   const connector = new Connector();
   const clientOpts = await connector.getOptions({
     instanceConnectionName: process.env.INSTANCE_CONNECTION_NAME,
-    authType: "IAM",
+    ipType: "PUBLIC"
+    // authType: "IAM",
   });
 
   const pool = await mysql.createPool({
     ...clientOpts,
     user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
   });
 
   const conn = await pool.getConnection();
 
-  const [result] = await conn.query(`SELECT NOW();`);
+  const [result] = await conn.query(`SELECT * FROM connect_4_user `);
   console.table(result); // prints returned time value from server
 
   res.status(200).json({ message: `Your username is: ${username}` });
