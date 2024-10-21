@@ -61,7 +61,7 @@ CREATE TABLE `connect_4_lobby_message` (
 
 DROP TABLE IF EXISTS `connect_4_user`;
 CREATE TABLE `connect_4_user` (
-  `username_c4` varchar(60) COLLATE utf8_unicode_ci NOT NULL,
+  `username` varchar(60) COLLATE utf8_unicode_ci NOT NULL,
   `password` varchar(60) COLLATE utf8_unicode_ci NOT NULL,
   `inLobby` tinyint NOT NULL,
   `token` int NOT NULL,

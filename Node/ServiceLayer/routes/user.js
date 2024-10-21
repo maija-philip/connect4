@@ -5,10 +5,9 @@
 
 const express = require("express");
 const router = express.Router();
+const Database = require("./../../DataAccess/queries.js");
+const db = new Database();
 
-// DELETE THIS
-const mysql = require("mysql2/promise");
-const {Connector} = require('@google-cloud/cloud-sql-connector');
 
 // GET /user?username=”username”
 router.get("/", async function (req, res) {
@@ -21,27 +20,10 @@ router.get("/", async function (req, res) {
   // 200 { username: “username”, inLobby: true }
   // 404 { error: “this user does not exist” }
 
-  // DELETE THIS
-  const connector = new Connector();
-  const clientOpts = await connector.getOptions({
-    instanceConnectionName: process.env.INSTANCE_CONNECTION_NAME,
-    ipType: "PUBLIC"
-    // authType: "IAM",
-  });
+  const result = await db.getUser(username);
+  console.log(result)
 
-  const pool = await mysql.createPool({
-    ...clientOpts,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-  });
-
-  const conn = await pool.getConnection();
-
-  const [result] = await conn.query(`SELECT * FROM connect_4_user `);
-  console.table(result); // prints returned time value from server
-
-  res.status(200).json({ message: `Your username is: ${username}` });
+  res.status(200).json({ message: `Your username is: ${username}`, result: result });
 });
 
 // POST user/verfiyUser
