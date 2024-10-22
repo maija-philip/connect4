@@ -23,13 +23,7 @@ CREATE TABLE `connect_4_current_games` (
   `playerYellow` varchar(60) COLLATE utf8_unicode_ci NOT NULL,
   `turn` int NOT NULL,
   `winner` int NOT NULL,
-  `row0` int NOT NULL,
-  `row1` int NOT NULL,
-  `row2` int NOT NULL,
-  `row3` int NOT NULL,
-  `row4` int NOT NULL,
-  `row5` int NOT NULL,
-  `row6` int NOT NULL,
+  `gameboard` json NOT NULL
   PRIMARY KEY (`gameId`)
   -- FOREIGN KEY (`playerPink`) REFERENCES `connect_4_user`(`username_c4`),
   -- FOREIGN KEY (`playerYellow`) REFERENCES `connect_4_user`(`username_c4`)

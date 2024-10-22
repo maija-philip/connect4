@@ -88,36 +88,24 @@ module.exports = function () {
     playerYellow,
     turn,
     winner,
-    row0,
-    row1,
-    row2,
-    row3,
-    row4,
-    row5,
-    row6
+    gameboard
   ) => {
     return await conn.runSQL(
-      "INSERT INTO connect_4_current_games (playerPink, playerYellow, turn, winner, row0, row1, row2, row3, row4, row5, row6 ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ",
+      "INSERT INTO connect_4_current_games (playerPink, playerYellow, turn, winner, gameboard ) VALUES ( ?, ?, ?, ?, ? ) ",
       [
         playerPink,
         playerYellow,
         turn,
         winner,
-        row0,
-        row1,
-        row2,
-        row3,
-        row4,
-        row5,
-        row6,
+        gameboard
       ]
     );
   };
 
-  this.takeTurn = async (gameId, turn, row0, row1, row2, row3, row4, row5, row6) => {
+  this.takeTurn = async (gameId, turn, gameboard) => {
     return await conn.runSQL(
-      "UPDATE connect_4_current_games SET turn = ?, row0 = ?, row1 = ?, row2 = ?, row3 = ?, row4 = ?, row5 = ?, row6 = ? WHERE gameId = ? ",
-      [turn, row0, row1, row2, row3, row4, row5, row6, gameId]
+      "UPDATE connect_4_current_games SET turn = ?, gameboard = ? WHERE gameId = ? ",
+      [turn, gameboard, gameId]
     );
   };
 

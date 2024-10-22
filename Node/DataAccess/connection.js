@@ -23,9 +23,8 @@ module.exports = function () {
       
         const conn = await pool.getConnection();
       
-        // const [result] = await conn.query(`SELECT * FROM connect_4_user `);
         const [result] = await conn.query(sql, data);
-        console.table(result); // prints returned time value from server   
+        // console.table(result); // prints returned time value from server   
         return result;
     }
 
