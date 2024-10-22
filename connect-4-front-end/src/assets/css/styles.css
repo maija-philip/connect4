@@ -108,3 +108,64 @@ button,
 .lobbyWrap {
     margin-top: 3em;
 }
+
+.logout {
+  text-decoration: none;
+  position: absolute;
+  top: 1em;
+  right: 2em;
+}
+.logout:hover {
+  text-decoration: underline;
+  color: var(--pink);
+}
+
+/* CHAT */
+.chatWrap {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 3em);
+  margin-bottom: 0;
+}
+
+.chat {
+  height: 100%;
+  display: flex;
+  flex-direction: column-reverse;
+  padding-bottom: 2.5em;
+  overflow-y: scroll;
+}
+.chat > div {
+  margin: 0.5em auto;
+}
+.chat-avatar {
+  width: 2.5em;
+  height: 2.5em;
+  border-radius: 4em;
+}
+.chat-message {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.chat-message > div {
+  text-align: left;
+  margin-right: 1em;
+}
+.chat-message > div .username {
+  font-size: 0.75em;
+  font-weight: bold;
+  margin-left: 1em;
+}
+.chat-message > div .message {
+  background-color: var(--background-variant);
+  padding: 0.5em 1em;
+  border-radius: 4em;
+}
+.chat-message-me {
+  flex-direction: row-reverse;
+}
+.chat-message-me > div {
+  margin-left: 0em;
+}
