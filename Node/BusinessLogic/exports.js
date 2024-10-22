@@ -4,15 +4,18 @@
 */
 
 const { move } = require("./game.js");
-const { getUserFromUsername, login } = require("./login.js");
+const { getUserFromUsername, login, setUpNewUser } = require("./login.js");
 
 // export to api request
 module.exports = function () {
 
-    this.getUser = async (username) => { return await getUserFromUsername(username); }
+    // User
 
+    this.getUser = async (username) => { return await getUserFromUsername(username); }
     this.validateLogin = async (username, password) => { return await login(username, password); }
+    this.validateNewUserInfo = async (username, password) => { return await setUpNewUser(username, password); }
     
-    // make sure the move is within the board and rules
+    // Game
+
     this.validateMove = (x, y) => { return move(x, y) };
 }
