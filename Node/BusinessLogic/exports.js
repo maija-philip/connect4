@@ -11,9 +11,9 @@ module.exports = function () {
 
     // User
 
-    this.getUser = async (username) => { return await getUserFromUsername(username); }
-    this.validateLogin = async (username, password) => { return await login(username, password); }
-    this.validateNewUserInfo = async (username, password) => { return await setUpNewUser(username, password); }
+    this.getUser = async (ip, username) => { return await getUserFromUsername(ip, username); }
+    this.validateLogin = async (ip, username, password) => { return await login(ip, username, password); }
+    this.validateNewUserInfo = async (ip, username, password) => { return await setUpNewUser(ip, username, password); }
     
     // Game
 

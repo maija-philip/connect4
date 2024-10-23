@@ -12,6 +12,9 @@ const business = new BusinessLogic();
 const Error = require("../../BusinessLogic/errors.js");
 const error = new Error();
 
+const Sanitizer = require("../../BusinessLogic/sanitize.js");
+const sanitizer = new Sanitizer();
+
 // GET /user?username=”username”
 router.get("/", async function (req, res) {
   // fast fail if username is not given
@@ -19,10 +22,10 @@ router.get("/", async function (req, res) {
     res.status(400).json({ error: "Please enter a username" });
     return;
   }
-  const username = req.query.username;
+  const username = sanitizer.sanitize(req.query.username);
 
   // call backend to get data
-  const errorMsg = await business.getUser(username);
+  const errorMsg = await business.getUser(req.ip, username);
   if (errorMsg !== error.noError) {
     res.status(404).json({ error: errorMsg });
     return;
@@ -32,15 +35,20 @@ router.get("/", async function (req, res) {
 
 // POST user/verifyUser
 router.post("/verifyUser", async function (req, res) {
-  const username = req.body.username;
-  const password = req.body.password;
+  let username = req.body.username;
+  let password = req.body.password;
 
   if (!username || !password) {
-    res.status(400).json({ error: "Please enter a username and password as url encoded form params" });
+    res.status(400).json({
+      error: "Please enter a username and password as url encoded form params",
+    });
     return;
   }
 
-  const errorMsg = await business.validateLogin(username, password);
+  username = sanitizer.sanitize(username);
+  password = sanitizer.sanitize(password);
+
+  const errorMsg = await business.validateLogin(req.ip, username, password);
   if (errorMsg !== error.noError) {
     res.status(404).json({ error: errorMsg });
     return;
@@ -50,16 +58,20 @@ router.post("/verifyUser", async function (req, res) {
 
 // POST user/createNewUser
 router.post("/createNewUser", async function (req, res) {
-
-  const username = req.body.username;
-  const password = req.body.password;
+  let username = req.body.username;
+  let password = req.body.password;
 
   if (!username || !password) {
-    res.status(400).json({ error: "Please enter a username and password as url encoded form params" });
+    res.status(400).json({
+      error: "Please enter a username and password as url encoded form params",
+    });
     return;
   }
 
-  const errorMsg = await business.validateNewUserInfo(username, password);
+  username = sanitizer.sanitize(username);
+  password = sanitizer.sanitize(password);
+
+  const errorMsg = await business.validateNewUserInfo(req.ip, username, password);
   if (errorMsg === error.somethingWentWrong) {
     res.status(500).json({ error: errorMsg });
     return;

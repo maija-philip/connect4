@@ -11,9 +11,15 @@ const db = new Database();
 
 const bcrypt = require("bcryptjs");
 
+const Token = require("./token.js");
+const tokenMachine = new Token();
+
 // Using provided username, get if the user is in the lobby or not
-async function getUserFromUsername(username) {
+async function getUserFromUsername(ip, username) {
   const result = await db.getUser(username);
+
+  let token = tokenMachine.createToken(ip, username);
+
   if (result.length == 0 || result[0].inLobby == 0) {
     return error.noUserInLobby;
   }
@@ -21,7 +27,7 @@ async function getUserFromUsername(username) {
 }
 
 // verify the login information
-async function login(username, password) {
+async function login(ip, username, password) {
   if (username.length > 60 || password > 60) {
     return error.invalidLogin;
   }
@@ -31,7 +37,6 @@ async function login(username, password) {
   }
 
   const match = await bcrypt.compare(password, result[0].password);
-  console.log("match? ", match);
   if (!match) {
     return error.invalidLogin;
   }
@@ -39,7 +44,7 @@ async function login(username, password) {
 }
 
 // create new user + hash their password
-async function setUpNewUser(username, password) {
+async function setUpNewUser(ip, username, password) {
   if (username.length > 60 || password > 60) {
     return error.invalidNewUserInformation;
   }
