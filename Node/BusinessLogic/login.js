@@ -3,7 +3,7 @@
     Connect 4
 */
 
-const Error = require("./errors.js");
+const Error = require("./public/errors.js");
 const error = new Error();
 
 const Database = require("./../DataAccess/queries.js");
@@ -50,6 +50,7 @@ async function setUpNewUser(ip, browser, token, username, password) {
   // does the token exist?
   let result = await db.doesTokenExist(token);
   let isTokenValid = tokenMachine.validateToken(ip, browser, token);
+  db.deleteToken(token);
   if (result.length < 1 || !isTokenValid) {
     return error.invalidToken;
   }

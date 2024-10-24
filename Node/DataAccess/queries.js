@@ -24,6 +24,13 @@ module.exports = function () {
     );
   };
 
+  this.deleteToken = async (token) => {
+    return await conn.runSQL(
+      "DELETE FROM connect_4_registration_tokens WHERE token = ? ",
+      [token]
+    );
+  };
+
   // USER
   this.getUser = async (username) => {
     return await conn.runSQL(

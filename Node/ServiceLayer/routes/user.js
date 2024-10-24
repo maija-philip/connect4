@@ -6,10 +6,10 @@
 const express = require("express");
 const router = express.Router();
 
-const BusinessLogic = require("../../BusinessLogic/exports.js");
+const BusinessLogic = require("../../BusinessLogic/public/exports.js");
 const business = new BusinessLogic();
 
-const Error = require("../../BusinessLogic/errors.js");
+const Error = require("../../BusinessLogic/public/errors.js");
 const error = new Error();
 
 const Sanitizer = require("../../BusinessLogic/sanitize.js");

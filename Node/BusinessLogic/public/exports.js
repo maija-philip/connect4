@@ -3,13 +3,13 @@
     Connect 4
 */
 
-const { move } = require("./game.js");
+const { move } = require("../game.js");
 const {
   getUserFromUsername,
   login,
   setUpNewUser,
   requestNewUserToken,
-} = require("./login.js");
+} = require("../login.js");
 
 // export to api request
 module.exports = function () {
