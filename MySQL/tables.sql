@@ -62,5 +62,10 @@ CREATE TABLE `connect_4_user` (
   PRIMARY KEY (`username_c4`)
 );
 
+DROP TABLE IF EXISTS `connect_4_registration_tokens`;
+CREATE TABLE `connect_4_registration_tokens` (
+  `token` varchar(100) NOT NULL,
+  PRIMARY KEY (`token`)
+);
 
 -- 2024-10-07 16:08:41

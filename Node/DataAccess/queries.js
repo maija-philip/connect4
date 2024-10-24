@@ -8,6 +8,22 @@ const conn = new Connection();
 
 // export to api request
 module.exports = function () {
+
+  // REGISTRATION TOKENS
+  this.saveToken = async (token) => {
+    return await conn.runSQL(
+      "INSERT INTO connect_4_registration_tokens (token) VALUES (?) ",
+      [token]
+    );
+  };
+
+  this.doesTokenExist = async (token) => {
+    return await conn.runSQL(
+      "SELECT * FROM connect_4_registration_tokens WHERE token = ? ",
+      [token]
+    );
+  };
+
   // USER
   this.getUser = async (username) => {
     return await conn.runSQL(

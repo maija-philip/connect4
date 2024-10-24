@@ -11,5 +11,5 @@ module.exports = function () {
     this.noUserInLobby = "This user does not exist or is not in the lobby"
     this.invalidLogin = "Username or password is incorrect"
     this.invalidNewUserInformation = "Password and username must be less than 60 characters and unique"
-    
+    this.invalidToken = "Token is invalid"
 }

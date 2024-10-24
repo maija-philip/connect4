@@ -60,6 +60,7 @@ router.post("/verifyUser", async function (req, res) {
 router.post("/createNewUser", async function (req, res) {
   let username = req.body.username;
   let password = req.body.password;
+  let token = req.body.token;
 
   if (!username || !password) {
     res.status(400).json({
@@ -71,7 +72,13 @@ router.post("/createNewUser", async function (req, res) {
   username = sanitizer.sanitize(username);
   password = sanitizer.sanitize(password);
 
-  const errorMsg = await business.validateNewUserInfo(req.ip, username, password);
+  const errorMsg = await business.validateNewUserInfo(
+    req.ip,
+    req.headers["user-agent"],
+    token,
+    username,
+    password
+  );
   if (errorMsg === error.somethingWentWrong) {
     res.status(500).json({ error: errorMsg });
     return;
@@ -81,6 +88,17 @@ router.post("/createNewUser", async function (req, res) {
     return;
   }
   res.status(200).json({ message: "Logged In" });
+});
+
+// GET /user/createNewUser
+router.get("/createNewUser", async function (req, res) {
+  // call backend to get data
+  const data = await business.getNewUserToken(req.ip, req.headers["user-agent"]);
+  if (data.error !== error.noError) {
+    res.status(404).json({ error: data.error });
+    return;
+  }
+  res.status(200).json({ token: data.token });
 });
 
 module.exports = router;

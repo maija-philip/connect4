@@ -15,10 +15,8 @@ const Token = require("./token.js");
 const tokenMachine = new Token();
 
 // Using provided username, get if the user is in the lobby or not
-async function getUserFromUsername(ip, username) {
+async function getUserFromUsername(username) {
   const result = await db.getUser(username);
-
-  let token = tokenMachine.createToken(ip, username);
 
   if (result.length == 0 || result[0].inLobby == 0) {
     return error.noUserInLobby;
@@ -44,13 +42,20 @@ async function login(ip, username, password) {
 }
 
 // create new user + hash their password
-async function setUpNewUser(ip, username, password) {
-  if (username.length > 60 || password > 60) {
+async function setUpNewUser(ip, browser, token, username, password) {
+  if (username.length > 60 || password.length > 60 || token.length > 100) {
     return error.invalidNewUserInformation;
   }
 
+  // does the token exist?
+  let result = await db.doesTokenExist(token);
+  let isTokenValid = tokenMachine.validateToken(ip, browser, token);
+  if (result.length < 1 || !isTokenValid) {
+    return error.invalidToken;
+  }
+
   // does this username exist already?
-  let result = await db.getUser(username);
+  result = await db.getUser(username);
   if (result.length > 0) {
     return error.invalidNewUserInformation;
   }
@@ -63,4 +68,21 @@ async function setUpNewUser(ip, username, password) {
   return error.noError;
 }
 
-module.exports = { getUserFromUsername, login, setUpNewUser };
+// create new user + hash their password
+async function requestNewUserToken(ip, browser) {
+  let token = tokenMachine.createToken(ip, browser);
+
+  let result = db.saveToken(token);
+  if (result.affectedRows < 1) {
+    return {error: error.somethingWentWrong}
+  }
+
+  return { token: token, error: error.noError };
+}
+
+module.exports = {
+  getUserFromUsername,
+  login,
+  setUpNewUser,
+  requestNewUserToken,
+};

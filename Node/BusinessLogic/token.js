@@ -5,7 +5,7 @@
 
 // export to api request
 module.exports = function () {
-  this.timeOutInMilliSeconds = 1800000; // 30 minutes
+  this.timeOutInMilliSeconds = 300000; // 5 minutes
 
   this.getRandomChar = () => {
     const characters =
@@ -18,12 +18,14 @@ module.exports = function () {
   /*
   Create Token
   */
-  this.createToken = (ip, username) => {
+  this.createToken = (ip, browser) => {
     let token = "";
 
     let ipWithoutDots = ip.split(":").join("");
     let numIP = parseInt(ipWithoutDots);
     let hexIP = numIP.toString(16);
+
+    let basicBrowser = browser.split("/")[0];
 
     let now = Date.now();
     let nowBase8 = now.toString(8);
@@ -32,12 +34,12 @@ module.exports = function () {
 
     // get longest length
     let lengths = [
-      username.length,
+      basicBrowser.length,
       hexIP.length,
       nowBase8.length,
       expireBase8.length,
     ];
-    let tokenBuilders = [username, hexIP, nowBase8, expireBase8];
+    let tokenBuilders = [basicBrowser, hexIP, nowBase8, expireBase8];
     let maxLength = 0;
     lengths.forEach((length) => {
       if (length > maxLength) {
@@ -58,10 +60,6 @@ module.exports = function () {
       }
     }
 
-    console.log(token);
-    console.log(this.undoToken(token));
-    console.log(this.validateToken(ip, username, token));
-
     return token;
   };
 
@@ -70,7 +68,7 @@ module.exports = function () {
   */
   this.undoToken = (token) => {
     let result = {
-      username: "",
+      browser: "",
       ip: "",
       creation: "",
       expiry: "",
@@ -101,7 +99,7 @@ module.exports = function () {
       }
     }
 
-    result.username = encodedResults[0];
+    result.browser = encodedResults[0];
     result.ip = parseInt(encodedResults[1], 16);
     result.creation = parseInt(encodedResults[2], 8);
     result.expiry = parseInt(encodedResults[3], 8);
@@ -114,23 +112,24 @@ module.exports = function () {
   - has it expired?
   - is it this user?
   */
-  this.validateToken = (ip, username, token) => {
-    const undoneToken = this.undoToken(token)
-    
+  this.validateToken = (ip, browser, token) => {
+    const undoneToken = this.undoToken(token);
+
     let ipWithoutDots = ip.split(":").join("");
-    if (ipWithoutDots !== undoneToken.ip ) {
-        console.log("ips not equal: ", ipWithoutDots, undoneToken.ip)
-        return false;
+    if (ipWithoutDots + "" !== undoneToken.ip + "") {
+    //   console.log("ips not equal: ", ipWithoutDots, undoneToken.ip)
+      return false;
     }
 
-    if (username !== undoneToken.username) {
-        console.log("usernames not equal: ", username, undoneToken.username)
-        return false;
+    let basicBrowser = browser.split("/")[0];
+    if (basicBrowser !== undoneToken.browser) {
+    //   console.log("usernames not equal: ", basicBrowser, undoneToken.browser)
+      return false;
     }
 
-    if (undoneToken.expiry >= Date.now()) {
-        console.log("has expired: ", undoneToken.expiry, Date.now())
-        return false;
+    if (parseInt(undoneToken.expiry) <= parseInt(Date.now())) {
+    //   console.log("has expired: ", parseInt(undoneToken.expiry), parseInt(Date.now()))
+      return false;
     }
 
     return true;
