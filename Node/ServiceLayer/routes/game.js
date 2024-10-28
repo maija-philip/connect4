@@ -6,7 +6,7 @@
 
 let express = require("express");
 const router = express.Router();
-const BusinessLayer = require("../../BusinessLogic/exports.js");
+const BusinessLayer = require("../../BusinessLogic/public/exports.js");
 const businessLayer = new BusinessLayer();
 
 

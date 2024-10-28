@@ -22,15 +22,22 @@ router.get("/", async function (req, res) {
     res.status(400).json({ error: "Please enter a username" });
     return;
   }
+
   const username = sanitizer.sanitize(req.query.username);
 
   // call backend to get data
-  const errorMsg = await business.getUser(req.ip, username);
+  const errorMsg = await business.getUser(username);
   if (errorMsg !== error.noError) {
     res.status(404).json({ error: errorMsg });
     return;
   }
-  res.status(200).json({ message: `${username} is in the lobby` });
+
+  // set up session
+  req.session.user = username;
+  req.session.save();
+  console.log(req.session)
+
+  res.status(200).json({ message: `${username} is in the lobby`, sessionUser: req.session.user });
 });
 
 // POST user/verifyUser
@@ -53,6 +60,11 @@ router.post("/verifyUser", async function (req, res) {
     res.status(404).json({ error: errorMsg });
     return;
   }
+
+  // set up session
+  req.session.user = username;
+  req.session.save();
+
   res.status(200).json({ message: "Logged In" });
 });
 
@@ -87,18 +99,11 @@ router.post("/createNewUser", async function (req, res) {
     res.status(404).json({ error: errorMsg });
     return;
   }
-  res.status(200).json({ message: "Logged In" });
-});
+  // set up session
+  req.session.user = username;
+  req.session.save();
 
-// GET /user/createNewUser
-router.get("/createNewUser", async function (req, res) {
-  // call backend to get data
-  const data = await business.getNewUserToken(req.ip, req.headers["user-agent"]);
-  if (data.error !== error.noError) {
-    res.status(404).json({ error: data.error });
-    return;
-  }
-  res.status(200).json({ token: data.token });
+  res.status(200).json({ message: "Logged In" });
 });
 
 module.exports = router;

@@ -3,9 +3,11 @@
     Connect 4
 */
 
+const { MIN_5 } = require("../constants");
+
 // export to api request
 module.exports = function () {
-  this.timeOutInMilliSeconds = 300000; // 5 minutes
+  this.timeOutInMilliSeconds = MIN_5; // 5 minutes
 
   this.getRandomChar = () => {
     const characters =
