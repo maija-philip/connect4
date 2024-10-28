@@ -65,7 +65,7 @@ router.post("/verifyUser", async function (req, res) {
   req.session.user = username;
   req.session.save();
 
-  res.status(200).json({ message: "Logged In" });
+  res.status(200).json({ message: "Logged In", username: username });
 });
 
 // POST user/createNewUser
@@ -103,7 +103,7 @@ router.post("/createNewUser", async function (req, res) {
   req.session.user = username;
   req.session.save();
 
-  res.status(200).json({ message: "Logged In" });
+  res.status(200).json({ message: "Logged In", username: username });
 });
 
 module.exports = router;

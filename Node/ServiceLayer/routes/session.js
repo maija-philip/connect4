@@ -20,8 +20,7 @@ router.get("/", async function (req, res) {
 // POST /session/logout
 router.post("/", async function (req, res) {
   if (req.session.user == null) {
-    res.redirect("/login");
-    return;
+    return res.redirect("/login");
   }
 
   req.session.destroy();

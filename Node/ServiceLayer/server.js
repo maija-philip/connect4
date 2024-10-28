@@ -7,6 +7,8 @@
 const express = require("express");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
+const cors = require('cors');
+
 const { MIN_30 } = require("../constants.js");
 
 const app = express();
@@ -14,8 +16,8 @@ const app = express();
 app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded());
+app.use(cors());
 
-app.set("trust proxy", 1);
 app.use(cookieParser());
 app.use(
   session({
