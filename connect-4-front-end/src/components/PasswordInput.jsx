@@ -12,8 +12,8 @@ export default function PasswordInput() {
 
   return (
     <div>
-      <label for="password">Password</label>
-      <div class="inputWithIcon">
+      <label htmlFor="password">Password</label>
+      <div className="inputWithIcon">
         <input
           type={showPassword ? "text" : "password"}
           id="password"

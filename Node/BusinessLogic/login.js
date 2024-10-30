@@ -29,7 +29,7 @@ async function login(ip, username, password) {
   if (username.length > 60 || password > 60) {
     return error.invalidLogin;
   }
-  const result = await db.getPassword(username);
+  let result = await db.getPassword(username);
   if (result.length == 0) {
     return error.invalidLogin;
   }
@@ -38,6 +38,12 @@ async function login(ip, username, password) {
   if (!match) {
     return error.invalidLogin;
   }
+
+  result = await db.changeInLobbyStatus(true, username);
+  if (result.length == 0 ){
+    return error.somethingWentWrong
+  }
+
   return error.noError;
 }
 
@@ -62,7 +68,7 @@ async function setUpNewUser(ip, browser, token, username, password) {
   }
 
   const hashedPassword = await bcrypt.hash(password, 10); // 10 rounds of salt
-  result = await db.createUser(username, hashedPassword, true, 0);
+  result = await db.createUser(username, hashedPassword, true);
   if (result.affectedRows < 1) {
     return error.somethingWentWrong;
   }

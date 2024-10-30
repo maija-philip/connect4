@@ -18,7 +18,7 @@ export default function LoginPage() {
       </h1>
 
       <form method="POST">
-        <Input label="Username" />
+        <Input label="Username"  name="username"/>
         <PasswordInput />
         <Link to={`/`} className="noUnderline">
           <input type="submit" value="Login" />

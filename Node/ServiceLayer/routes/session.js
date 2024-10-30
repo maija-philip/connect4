@@ -8,9 +8,8 @@ const router = express.Router();
 
 // GET /session
 router.get("/", async function (req, res) {
-  console.log(req.session);
   if (req.session.user == null) {
-    res.redirect("/login");
+    res.status(404).json({ error: `No session` });
     return;
   }
 
@@ -18,10 +17,12 @@ router.get("/", async function (req, res) {
 });
 
 // POST /session/logout
-router.post("/", async function (req, res) {
+router.post("/logout", async function (req, res) {
   if (req.session.user == null) {
     return res.redirect("/login");
   }
+
+// TODO get username + remove username from lobby
 
   req.session.destroy();
 

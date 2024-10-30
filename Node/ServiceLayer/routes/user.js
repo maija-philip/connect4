@@ -56,6 +56,10 @@ router.post("/verifyUser", async function (req, res) {
   password = sanitizer.sanitize(password);
 
   const errorMsg = await business.validateLogin(req.ip, username, password);
+  if (errorMsg === error.somethingWentWrong) {
+    res.status(500).json({ error: errorMsg });
+    return;
+  }
   if (errorMsg !== error.noError) {
     res.status(404).json({ error: errorMsg });
     return;
@@ -75,6 +79,7 @@ router.post("/createNewUser", async function (req, res) {
   let token = req.body.token;
 
   if (!username || !password) {
+    console.log("400, not proper params")
     res.status(400).json({
       error: "Please enter a username and password as url encoded form params",
     });
@@ -92,10 +97,12 @@ router.post("/createNewUser", async function (req, res) {
     password
   );
   if (errorMsg === error.somethingWentWrong) {
+    console.log("500, something went wrong")
     res.status(500).json({ error: errorMsg });
     return;
   }
   if (errorMsg !== error.noError) {
+    console.log("404,", errorMsg)
     res.status(404).json({ error: errorMsg });
     return;
   }
@@ -103,7 +110,29 @@ router.post("/createNewUser", async function (req, res) {
   req.session.user = username;
   req.session.save();
 
+  console.log("200, logged in")
+
   res.status(200).json({ message: "Logged In", username: username });
 });
+
+router.get("/getToken", async function (req, res) {
+  
+  const result = await business.getNewUserToken(
+    req.ip,
+    req.headers["user-agent"]
+  );
+
+  if (result.error === error.somethingWentWrong) {
+    res.status(500).json({ error: errorMsg });
+    return;
+  }
+  if (result.error !== error.noError) {
+    res.status(404).json({ error: errorMsg });
+    return;
+  }
+  
+  res.status(200).json({ token: result.token });
+});
+
 
 module.exports = router;

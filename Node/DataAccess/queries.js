@@ -53,22 +53,10 @@ module.exports = function () {
     );
   };
 
-  this.getToken = async (username) => {
-    return await conn.runSQL("SELECT token FROM connect_4_user WHERE username = ? ", [
-      username,
-    ]);
-  };
-
-  this.getUserWithToken = async (token) => {
-    return await conn.runSQL("SELECT username FROM connect_4_user WHERE token = ? ", [
-      token,
-    ]);
-  };
-
-  this.createUser = async (username, password, inLobby, token) => {
+  this.createUser = async (username, password, inLobby) => {
     return await conn.runSQL(
-      "INSERT INTO connect_4_user (username, password, inLobby, token) VALUES (?, ?, ?, ?) ",
-      [username, password, inLobby, token]
+      "INSERT INTO connect_4_user (username, password, inLobby) VALUES (?, ?, ?) ",
+      [username, password, inLobby]
     );
   };
 
