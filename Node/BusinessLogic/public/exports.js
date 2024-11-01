@@ -4,6 +4,7 @@
 */
 
 const { move } = require("../game.js");
+const { getLobbyMessages } = require("../lobby.js");
 const {
   getUserFromUsername,
   login,
@@ -27,6 +28,12 @@ module.exports = function () {
   this.getNewUserToken = async (ip, browser) => {
     return await requestNewUserToken(ip, browser);
   };
+
+  // lobby
+  this.getAllLobbyMessages = async () => {
+    return await getLobbyMessages();
+  }
+
 
   // Game
 

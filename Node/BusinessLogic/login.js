@@ -25,10 +25,11 @@ async function getUserFromUsername(username) {
 }
 
 // verify the login information
-async function login(ip, username, password) {
+async function login(username, password) {
   if (username.length > 60 || password > 60) {
     return error.invalidLogin;
   }
+
   let result = await db.getPassword(username);
   if (result.length == 0) {
     return error.invalidLogin;
@@ -49,13 +50,14 @@ async function login(ip, username, password) {
 
 // create new user + hash their password
 async function setUpNewUser(ip, browser, token, username, password) {
-  if (username.length > 60 || password.length > 60 || token.length > 100) {
+  if (username.length > 60 || username.length < 4 || password.length > 60 || password.length < 4 || token.length > 100 || token.length < 4) {
     return error.invalidNewUserInformation;
   }
 
   // does the token exist?
   let result = await db.doesTokenExist(token);
   let isTokenValid = tokenMachine.validateToken(ip, browser, token);
+
   db.deleteToken(token);
   if (result.length < 1 || !isTokenValid) {
     return error.invalidToken;
@@ -63,6 +65,7 @@ async function setUpNewUser(ip, browser, token, username, password) {
 
   // does this username exist already?
   result = await db.getUser(username);
+
   if (result.length > 0) {
     return error.invalidNewUserInformation;
   }
@@ -72,6 +75,7 @@ async function setUpNewUser(ip, browser, token, username, password) {
   if (result.affectedRows < 1) {
     return error.somethingWentWrong;
   }
+
   return error.noError;
 }
 

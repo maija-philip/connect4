@@ -45,7 +45,7 @@ CREATE TABLE `connect_4_game_message` (
 DROP TABLE IF EXISTS `connect_4_lobby_message`;
 CREATE TABLE `connect_4_lobby_message` (
   `messageId` int NOT NULL AUTO_INCREMENT,
-  `timestamp` datetime NOT NULL,
+  `timestamp` DATETIME DEFAULT CURRENT_TIMESTAMP,
   `user` varchar(60) COLLATE utf8_unicode_ci NOT NULL,
   `message` varchar(200) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`messageId`)
@@ -58,7 +58,6 @@ CREATE TABLE `connect_4_user` (
   `username` varchar(60) COLLATE utf8_unicode_ci NOT NULL,
   `password` varchar(60) COLLATE utf8_unicode_ci NOT NULL,
   `inLobby` tinyint NOT NULL,
-  `token` int NOT NULL,
   PRIMARY KEY (`username_c4`)
 );
 

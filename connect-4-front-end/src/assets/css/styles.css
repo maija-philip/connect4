@@ -103,6 +103,9 @@ button,
 .loginPageWrap span {
   color: var(--yellow);
 }
+.red {
+  color: var(--error);
+}
 
 /* LOBBY PAGE */
 .lobbyWrap {

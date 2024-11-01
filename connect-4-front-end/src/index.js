@@ -2,36 +2,10 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-
-// pages
-import LoginPage from "./pages/LoginPage.jsx";
-import LobbyPage from "./pages/LobbyPage.jsx";
-import CreateAccountPage from "./pages/CreateAccount.jsx";
-import GamePage from "./pages/GamePage.jsx";
+import { Connect4Router } from "./Connect4Router.jsx";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-
-// all the pages you can navigate to
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <LobbyPage />,
-  },
-  {
-    path: "/login",
-    element: <LoginPage />,
-  },
-  {
-    path: "/createAccount",
-    element: <CreateAccountPage />,
-  },
-  {
-    path: "/game/:gameId",
-    element: <GamePage />,
-  },
-]);
 
 // Creates the theme for MUI
 const theme = createTheme({
@@ -50,9 +24,7 @@ const theme = createTheme({
 root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <RouterProvider router={router}>
-        <GamePage props={undefined} />
-      </RouterProvider>
+      <Connect4Router />
     </ThemeProvider>
   </React.StrictMode>
 );

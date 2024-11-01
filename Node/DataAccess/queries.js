@@ -69,6 +69,7 @@ module.exports = function () {
 
   // LOBBY
   this.getLobbyMessages = async () => {
+    await conn.runSQL("DELETE FROM connect_4_lobby_message WHERE timestamp < (NOW() - INTERVAL 10 MINUTE)", [])
     return await conn.runSQL("SELECT * FROM connect_4_lobby_message", []);
   };
 

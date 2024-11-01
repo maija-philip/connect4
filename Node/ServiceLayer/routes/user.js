@@ -15,7 +15,12 @@ const error = new Error();
 const Sanitizer = require("../../BusinessLogic/sanitize.js");
 const sanitizer = new Sanitizer();
 
-// GET /user?username=”username”
+/**
+ * GET
+ * user?username="blah"
+ * 
+ * Given a username, return whether the user is in the lobby & exists or not
+ */
 router.get("/", async function (req, res) {
   // fast fail if username is not given
   if (!req.query || !req.query.hasOwnProperty("username")) {
@@ -40,7 +45,12 @@ router.get("/", async function (req, res) {
   res.status(200).json({ message: `${username} is in the lobby`, sessionUser: req.session.user });
 });
 
-// POST user/verifyUser
+/**
+ * POST
+ * user/verifyUser
+ * 
+ * Given a username and password, verify the user exists and the password is correct
+ */
 router.post("/verifyUser", async function (req, res) {
   let username = req.body.username;
   let password = req.body.password;
@@ -55,7 +65,7 @@ router.post("/verifyUser", async function (req, res) {
   username = sanitizer.sanitize(username);
   password = sanitizer.sanitize(password);
 
-  const errorMsg = await business.validateLogin(req.ip, username, password);
+  const errorMsg = await business.validateLogin(username, password);
   if (errorMsg === error.somethingWentWrong) {
     res.status(500).json({ error: errorMsg });
     return;
@@ -72,7 +82,12 @@ router.post("/verifyUser", async function (req, res) {
   res.status(200).json({ message: "Logged In", username: username });
 });
 
-// POST user/createNewUser
+/**
+ * POST
+ * user/createNewUser
+ * 
+ * Given a username, password, and token, validate the data and create a new user
+ */
 router.post("/createNewUser", async function (req, res) {
   let username = req.body.username;
   let password = req.body.password;
@@ -115,6 +130,12 @@ router.post("/createNewUser", async function (req, res) {
   res.status(200).json({ message: "Logged In", username: username });
 });
 
+/**
+ * POST
+ * user/getToken
+ * 
+ * Get a token generated from the user's ip and browser information
+ */
 router.get("/getToken", async function (req, res) {
   
   const result = await business.getNewUserToken(

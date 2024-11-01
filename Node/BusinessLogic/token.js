@@ -23,9 +23,8 @@ module.exports = function () {
   this.createToken = (ip, browser) => {
     let token = "";
 
-    let ipWithoutDots = ip.split(":").join("");
-    let numIP = parseInt(ipWithoutDots);
-    let hexIP = numIP.toString(16);
+    let ipWithoutColon = ip.split(":").join("");
+    let ipWithoutDots = ipWithoutColon.split(".").join("");
 
     let basicBrowser = browser.split("/")[0];
 
@@ -37,11 +36,11 @@ module.exports = function () {
     // get longest length
     let lengths = [
       basicBrowser.length,
-      hexIP.length,
+      ipWithoutDots.length,
       nowBase8.length,
       expireBase8.length,
     ];
-    let tokenBuilders = [basicBrowser, hexIP, nowBase8, expireBase8];
+    let tokenBuilders = [basicBrowser, ipWithoutDots, nowBase8, expireBase8];
     let maxLength = 0;
     lengths.forEach((length) => {
       if (length > maxLength) {
@@ -102,7 +101,7 @@ module.exports = function () {
     }
 
     result.browser = encodedResults[0];
-    result.ip = parseInt(encodedResults[1], 16);
+    result.ip = encodedResults[1];
     result.creation = parseInt(encodedResults[2], 8);
     result.expiry = parseInt(encodedResults[3], 8);
 
@@ -117,20 +116,21 @@ module.exports = function () {
   this.validateToken = (ip, browser, token) => {
     const undoneToken = this.undoToken(token);
 
-    let ipWithoutDots = ip.split(":").join("");
+    let ipWithoutColon = ip.split(":").join("");
+    let ipWithoutDots = ipWithoutColon.split(".").join("");
     if (ipWithoutDots + "" !== undoneToken.ip + "") {
-    //   console.log("ips not equal: ", ipWithoutDots, undoneToken.ip)
+      console.log("ips not equal: ", ipWithoutDots, undoneToken.ip)
       return false;
     }
 
     let basicBrowser = browser.split("/")[0];
     if (basicBrowser !== undoneToken.browser) {
-    //   console.log("usernames not equal: ", basicBrowser, undoneToken.browser)
+      console.log("usernames not equal: ", basicBrowser, undoneToken.browser)
       return false;
     }
 
     if (parseInt(undoneToken.expiry) <= parseInt(Date.now())) {
-    //   console.log("has expired: ", parseInt(undoneToken.expiry), parseInt(Date.now()))
+      console.log("has expired: ", parseInt(undoneToken.expiry), parseInt(Date.now()))
       return false;
     }
 

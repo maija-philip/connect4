@@ -16,7 +16,14 @@ const app = express();
 app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded());
-app.use(cors());
+
+
+app.use(cors({
+  origin: true,
+  credentials: true,
+}));
+app.enable('trust proxy')
+
 
 app.use(cookieParser());
 app.use(
@@ -24,7 +31,7 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: true, maxAge: MIN_30 },
+    cookie: { maxAge: MIN_30 }, // secure: true, httpOnly: true, secure: true, , sameSite: 'none'
   })
 );
 

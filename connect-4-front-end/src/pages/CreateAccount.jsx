@@ -3,13 +3,13 @@ import "../assets/css/constants.css";
 import "../assets/css/styles.css";
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PasswordInput from "../components/PasswordInput";
 import Input from "../components/Input";
 import { API_METHODS, getAPIData } from "../utils/callAPI";
+import { validateUsernameAndPassword } from "../utils/validateUsernameAndPassword";
 
 export default function CreateAccountPage() {
-
   /**
    * GET TOKEN
    */
@@ -26,50 +26,48 @@ export default function CreateAccountPage() {
     fetchData();
   }, [setToken]);
 
-  console.log(token);
-  
-  /**
-   * Validate Form
-   */
-
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-
-  const validateData = () => {
-    return false;
-  }
-
-
+  // console.log(token);
 
   /**
    * Send Login Request
    */
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
-  const createUser = (event) => {
 
-    if (!validateData()) {
+  const createUser = (event) => {
+    event.preventDefault();
+    setErrorMessage("");
+
+    console.log("Creating user ...");
+
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    const validationResult = validateUsernameAndPassword(username, password);
+
+    if (validationResult.error !== false) {
+      setErrorMessage(validationResult.error);
       return;
     }
 
-    const data = new URLSearchParams();
-    data.append('username', username)
-    data.append('password', password)
-    data.append('token', token)
+    const data = {
+      username: username,
+      password: password,
+      token: token,
+    };
 
-    getAPIDataFormParams("/user/createNewUser", API_METHODS.post, data)
-    .then(response => {
-      // do something
-      console.log('Success', response)
-      navigate("/");
-    })
-    .catch(error => {
-      // do something
-      console.log('Error', error)
-    })
-
-  }
-
-
+    getAPIData("/user/createNewUser", API_METHODS.post, data)
+      .then((response) => {
+        console.log("Success", response);
+        if (response.error && response.error === "Token is invalid") {
+          setErrorMessage("Something went wrong, reload and try again");
+        } else if (response.error) {
+          setErrorMessage(response.error);
+        } else {
+          navigate("/");
+        }
+      })
+  };
 
   /**
    * HTML Return
@@ -84,9 +82,9 @@ export default function CreateAccountPage() {
         Create <span>Account</span>
       </h1>
 
-      <form 
-        onSubmit={createUser}
-      >
+      <form onSubmit={createUser}>
+        <p className="red">{errorMessage}</p>
+
         <Input label="Username" name="username" />
         <PasswordInput />
 
