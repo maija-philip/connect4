@@ -11,7 +11,7 @@ export const UsernameContext = React.createContext(null);
 
 export const Connect4Router = () => {
   // Create username context so it can be used across the app
-  const [username, setUsername] = React.useState("");
+  const [username, setUsername] = React.useState("test");
 
   // all the pages you can navigate to
   const router = createBrowserRouter([

@@ -1,6 +1,6 @@
 const connect4server =
-  "https://connect4service-281256585027.us-central1.run.app";
-// "http://localhost:8080";
+  // "https://connect4service-281256585027.us-central1.run.app";
+"http://localhost:8080";
 
 /**
  * return the data received form the api specified

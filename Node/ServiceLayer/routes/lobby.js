@@ -18,17 +18,7 @@ const sanitizer = new Sanitizer();
 // GET /lobby
 router.get("/", async function (req, res) {
   const result = await business.getAllLobbyMessages()
-
-  if (result.error === error.somethingWentWrong) {
-    res.status(500).json({ error: errorMsg });
-    return;
-  }
-  if (result.error !== error.noError) {
-    res.status(404).json({ error: errorMsg });
-    return;
-  }
-
-  res.status(200).json({ messages: result.messages });
+  res.status(200).json({ messages: result });
 });
 
 // POST /lobby/sendMessage

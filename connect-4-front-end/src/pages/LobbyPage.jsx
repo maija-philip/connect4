@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function LobbyPage() {
 
+  const [messages, setMessages] = React.useState([]);
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -19,6 +20,8 @@ export default function LobbyPage() {
       if (result.error) {
         navigate("/login");
       }
+      result = await getAPIData("/lobby", API_METHODS.get, {})
+      setMessages(result.messages)
     }
     
     fetchData();
@@ -40,7 +43,7 @@ export default function LobbyPage() {
         <p>play game</p>
       </Link>
 
-      <Chat/>
+      <Chat messages={messages}/>
     </div>
   );
 }
