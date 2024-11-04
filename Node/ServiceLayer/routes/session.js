@@ -13,7 +13,7 @@ router.get("/", async function (req, res) {
     return;
   }
 
-  res.status(200).json({ message: `session secure` });
+  res.status(200).json({ message: `session secure`, username: req.session.user });
 });
 
 // POST /session/logout

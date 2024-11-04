@@ -7,11 +7,16 @@ import Logout from "../components/Logout";
 import Chat from "../components/Chat";
 import { API_METHODS, getAPIData } from "../utils/callAPI";
 import { useNavigate } from "react-router-dom";
+import { useCurrentUser } from "../Connect4Router";
+import { CircularProgress } from "@mui/material";
 
 export default function LobbyPage() {
 
-  const [messages, setMessages] = React.useState([]);
   const navigate = useNavigate();
+  const { setCurrentUser } = useCurrentUser();
+
+  const [messages, setMessages] = React.useState([]);
+  const [isChatLoading, setIsChatLoading] = React.useState(false);
 
   React.useEffect(() => {
 
@@ -20,12 +25,15 @@ export default function LobbyPage() {
       if (result.error) {
         navigate("/login");
       }
+      setCurrentUser(result.username)
+      setIsChatLoading(true)
       result = await getAPIData("/lobby", API_METHODS.get, {})
       setMessages(result.messages)
+      setIsChatLoading(false)
     }
     
     fetchData();
-  }, [navigate]);
+  }, [navigate, setCurrentUser]);
 
   return (
     <div className="loginPageWrap lobbyWrap chatWrap">
@@ -43,7 +51,7 @@ export default function LobbyPage() {
         <p>play game</p>
       </Link>
 
-      <Chat messages={messages}/>
+      { isChatLoading ? <div className="chatWrap" style={{justifyContent: 'center', alignItems: 'center'}}><CircularProgress/></div> : <Chat messages={messages}/>}
     </div>
   );
 }

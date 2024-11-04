@@ -7,11 +7,10 @@ import LobbyPage from "./pages/LobbyPage.jsx";
 import CreateAccountPage from "./pages/CreateAccount.jsx";
 import GamePage from "./pages/GamePage.jsx";
 
-export const UsernameContext = React.createContext(null);
+export const CurrentUserContext = React.createContext();
 
 export const Connect4Router = () => {
-  // Create username context so it can be used across the app
-  const [username, setUsername] = React.useState("test");
+  const [currentUser, setCurrentUser] = React.useState(null);
 
   // all the pages you can navigate to
   const router = createBrowserRouter([
@@ -34,12 +33,12 @@ export const Connect4Router = () => {
   ]);
 
   return (
-    <RouterProvider router={router}>
-      <UsernameContext.Provider
-        value={{ username: username, setUsername: setUsername }}
-      >
+    <CurrentUserContext.Provider value={{ currentUser, setCurrentUser }}>
+      <RouterProvider router={router}>
         <GamePage props={undefined} />
-      </UsernameContext.Provider>
-    </RouterProvider>
+      </RouterProvider>
+    </CurrentUserContext.Provider>
   );
 };
+
+export const useCurrentUser = () => React.useContext(CurrentUserContext)

@@ -8,6 +8,8 @@ import PasswordInput from "../components/PasswordInput";
 import Input from "../components/Input";
 import { API_METHODS, getAPIData } from "../utils/callAPI";
 import { validateUsernameAndPassword } from "../utils/validateUsernameAndPassword";
+import CircularProgress from '@mui/material/CircularProgress';
+import { useCurrentUser } from "../Connect4Router";
 
 export default function LoginPage() {
   /**
@@ -15,10 +17,14 @@ export default function LoginPage() {
    */
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false);
+  const { setCurrentUser } = useCurrentUser();
+
 
   const validateLogin = (event) => {
     event.preventDefault();
     setErrorMessage("");
+    setIsProcessing(true);
 
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
@@ -35,15 +41,16 @@ export default function LoginPage() {
       password: password,
     };
 
-    getAPIData("/user/verifyUser", API_METHODS.post, data)
-      .then((response) => {
-        console.log("Success", response);
-        if (response.error) {
-          setErrorMessage(response.error);
-        } else {
-          navigate("/");
-        }
-      })
+    getAPIData("/user/verifyUser", API_METHODS.post, data).then((response) => {
+      console.log("Success", response);
+      setIsProcessing(false);
+      if (response.error) {
+        setErrorMessage(response.error);
+      } else {
+        setCurrentUser(response.username)
+        navigate("/");
+      }
+    });
   };
 
   /**
@@ -51,26 +58,32 @@ export default function LoginPage() {
    */
   return (
     <div className="loginPageWrap">
-      <div
-        className="logo"
-        aria-label="connect 4 graphical interpretation with 2 by 2 purple board alternating pink and purple tiles"
-      ></div>
-      <h1>
-        Connect <span>4</span>
-      </h1>
+      {isProcessing ? (
+        <CircularProgress />
+      ) : (
+        <>
+          <div
+            className="logo"
+            aria-label="connect 4 graphical interpretation with 2 by 2 purple board alternating pink and purple tiles"
+          ></div>
+          <h1>
+            Connect <span>4</span>
+          </h1>
 
-      <form onSubmit={validateLogin}>
-        <p className="red">{errorMessage}</p>
+          <form onSubmit={validateLogin}>
+            <p className="red">{errorMessage}</p>
 
-        <Input label="Username" name="username" />
-        <PasswordInput />
+            <Input label="Username" name="username" />
+            <PasswordInput />
 
-        <input type="submit" value="Login" />
-      </form>
+            <input type="submit" value="Login" />
+          </form>
 
-      <Link to={`/createAccount`}>
-        <p>Create Account</p>
-      </Link>
+          <Link to={`/createAccount`}>
+            <p>Create Account</p>
+          </Link>
+        </>
+      )}
     </div>
   );
 }
