@@ -9,11 +9,26 @@ const error = new Error();
 const Database = require("./../DataAccess/queries.js");
 const db = new Database();
 
-async function something() {}
+async function getLobbyMessages() {
+  const result = await db.getLobbyMessages();
 
-async function something2() {}
+  return result;
+}
+
+async function storeMessage(username, message) {
+  if (message.length > 200) {
+    return error.messageTooLong
+  }
+
+  const result = db.sendLobbyMessage(username, message)
+  if (result.length < 1) {
+    return error.somethingWentWrong
+  }
+
+  return error.noError
+}
 
 module.exports = {
-  something,
-  something2,
+  getLobbyMessages,
+  storeMessage,
 };

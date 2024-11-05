@@ -4,12 +4,14 @@
 */
 
 const { move } = require("../game.js");
-const { getLobbyMessages } = require("../lobby.js");
+const { getLobbyMessages, storeMessage } = require("../chat.js");
 const {
   getUserFromUsername,
   login,
   setUpNewUser,
   requestNewUserToken,
+  logoutUser,
+  getUsersInLobby,
 } = require("../login.js");
 
 // export to api request
@@ -19,6 +21,9 @@ module.exports = function () {
   this.getUser = async (username) => {
     return await getUserFromUsername(username);
   };
+  this.getLobbyUsers = async () => {
+    return await getUsersInLobby()
+  }
   this.validateLogin = async (username, password) => {
     return await login(username, password);
   };
@@ -28,11 +33,20 @@ module.exports = function () {
   this.getNewUserToken = async (ip, browser) => {
     return await requestNewUserToken(ip, browser);
   };
+  this.logout = async (username) => {
+    return await logoutUser(username)
+  }
 
-  // lobby
+  // Chat
   this.getAllLobbyMessages = async () => {
     return await getLobbyMessages();
   }
+
+  this.sendMessage = async (username, message) => {
+    return await storeMessage(username, message)
+  }
+
+  // Lobby
 
 
   // Game

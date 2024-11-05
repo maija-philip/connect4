@@ -6,7 +6,7 @@ import MessageInput from "../components/MessageInput.jsx";
 import ChatMessage from "./ChatMessage.jsx";
 import { useCurrentUser } from "../Connect4Router.jsx";
 
-export default function Chat({ messages }) {
+export default function Chat({ messages, sendMessage }) {
   
   const { currentUser } = useCurrentUser();
 
@@ -23,7 +23,7 @@ export default function Chat({ messages }) {
           />
         );
       })}
-      <MessageInput id="lobby" />
+      <MessageInput id="lobby" sendMessage={sendMessage}/>
     </div>
   );
 }

@@ -20,14 +20,18 @@ const sanitizer = new Sanitizer();
  * user?username="blah"
  * 
  * Given a username, return whether the user is in the lobby & exists or not
+ * If no username, gives a list of users in the lobby
  */
 router.get("/", async function (req, res) {
-  // fast fail if username is not given
+
+  // get all users in lobby
   if (!req.query || !req.query.hasOwnProperty("username")) {
-    res.status(400).json({ error: "Please enter a username" });
+    const result = await business.getLobbyUsers()
+    res.status(200).json({ users: result });
     return;
   }
 
+  // return specific user
   const username = sanitizer.sanitize(req.query.username);
 
   // call backend to get data

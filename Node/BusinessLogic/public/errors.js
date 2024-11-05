@@ -12,4 +12,6 @@ module.exports = function () {
     this.invalidLogin = "Username or password is incorrect"
     this.invalidNewUserInformation = "Password and username must be less than 60 characters and unique"
     this.invalidToken = "Token is invalid"
+    this.messageTooLong = "Message needs to be 200 characters or less"
+    this.usernameDNE = "This username is not valid or doesn't exist"
 }

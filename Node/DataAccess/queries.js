@@ -80,10 +80,17 @@ module.exports = function () {
     );
   };
 
-  this.sendGameRequest = async (senderUsername, recieverUsername) => {
+  this.sendGameRequest = async (senderUsername, receiverUsername) => {
     return await conn.runSQL(
       "INSERT INTO connect_4_connection_request (userCreated, userRequested) VALUES ( ?, ? ) ",
-      [senderUsername, recieverUsername]
+      [senderUsername, receiverUsername]
+    );
+  };
+
+  this.deleteGameRequest = async (senderUsername, receiverUsername) => {
+    return await conn.runSQL(
+      "DELETE FROM connect_4_connection_request WHERE userCreated = ? AND userRequested = ? ",
+      [senderUsername, receiverUsername]
     );
   };
 

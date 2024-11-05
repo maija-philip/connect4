@@ -24,6 +24,13 @@ async function getUserFromUsername(username) {
   return error.noError;
 }
 
+// Using provided username, get if the user is in the lobby or not
+async function getUsersInLobby() {
+  const result = await db.getUsersInLobby();
+  console.log(result)
+  return result;
+}
+
 // verify the login information
 async function login(username, password) {
   if (username.length > 60 || password > 60) {
@@ -91,9 +98,24 @@ async function requestNewUserToken(ip, browser) {
   return { token: token, error: error.noError };
 }
 
+
+// create new user + hash their password
+async function logoutUser(username) {
+  
+  let result = db.changeInLobbyStatus(false, username);
+  if (result.affectedRows < 1) {
+    return error.somethingWentWrong
+  }
+
+  return error.noError ;
+}
+
+
 module.exports = {
   getUserFromUsername,
+  getUsersInLobby,
   login,
   setUpNewUser,
   requestNewUserToken,
+  logoutUser
 };
