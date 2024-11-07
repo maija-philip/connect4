@@ -33,6 +33,7 @@ export default function LoginPage() {
 
     if (validationResult.error !== false) {
       setErrorMessage(validationResult.error);
+      setIsProcessing(false)
       return;
     }
 

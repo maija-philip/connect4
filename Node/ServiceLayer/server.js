@@ -61,6 +61,9 @@ console.log("Express started on port 8080");
 /**
  * Set Up Web Server
  */
+const BusinessLogic = require("../BusinessLogic/public/exports.js");
+const business = new BusinessLogic();
+
 var WebSocketServer = require("ws").Server;
 var wss = new WebSocketServer({ server: server });
 
@@ -68,6 +71,12 @@ wss.on("connection", function (ws) {
   // wss.broadcast("Connection!");
 
   ws.on("message", function (message) {
+    let parsedMessage = JSON.parse(message)
+    
+    // if the parsed message has a message component, store the message
+    if (parsedMessage.message) {
+      business.sendMessage(parsedMessage.user, parsedMessage.message)
+    }
     wss.broadcast(message);
   });
 });

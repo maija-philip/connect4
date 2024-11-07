@@ -6,7 +6,7 @@ import Avatar from "./Avatar";
 export default function ChatMessage({ username, message, isSentByMe }) {
   return (
     <div className={isSentByMe ? "chat-message chat-message-me" : "chat-message"}>
-      <Avatar/>
+      <Avatar username={username}/>
       <div>
         { isSentByMe ? <></> : <p className="username">{username}</p> }
         <p className="message">{message}</p>

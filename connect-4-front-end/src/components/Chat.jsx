@@ -7,17 +7,14 @@ import ChatMessage from "./ChatMessage.jsx";
 import { useCurrentUser } from "../Connect4Router.jsx";
 
 export default function Chat({ messages, sendMessage }) {
-  
   const { currentUser } = useCurrentUser();
-
-  React.useEffect(() => {
-    console.log("messages: ", messages)
-  })
 
   return (
     <div className="chat">
+      <MessageInput id="lobby" sendMessage={sendMessage} />
       {messages.length < 1 ? <p>No Messages</p> : <></>}
-      {messages.map((item, index) => {
+
+      {[...messages].reverse().map((item, index) => {
         return (
           <ChatMessage
             key={index}
@@ -27,7 +24,6 @@ export default function Chat({ messages, sendMessage }) {
           />
         );
       })}
-      <MessageInput id="lobby" sendMessage={sendMessage}/>
     </div>
   );
 }

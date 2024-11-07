@@ -53,6 +53,7 @@ export default function CreateAccountPage() {
 
     if (validationResult.error !== false) {
       setErrorMessage(validationResult.error);
+      setIsProcessing(false);
       return;
     }
 
