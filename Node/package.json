@@ -24,7 +24,12 @@
     "jsdom": "^25.0.1",
     "mysql2": "^3.11.3",
     "nodemon": "^3.1.7",
+    "socket.io": "^4.8.1",
     "websocket": "^1.0.35"
   },
-  "private": true
+  "private": true,
+  "optionalDependencies": {
+    "bufferutil": "^4.0.8",
+    "utf-8-validate": "^5.0.10"
+  }
 }

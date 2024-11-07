@@ -10,6 +10,10 @@ export default function Chat({ messages, sendMessage }) {
   
   const { currentUser } = useCurrentUser();
 
+  React.useEffect(() => {
+    console.log("messages: ", messages)
+  })
+
   return (
     <div className="chat">
       {messages.length < 1 ? <p>No Messages</p> : <></>}

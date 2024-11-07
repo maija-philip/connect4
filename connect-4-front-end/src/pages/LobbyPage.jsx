@@ -14,13 +14,12 @@ export default function LobbyPage() {
    * Web Sockets Variables
    */
   const ws = React.useRef(null);
-  const socketUrl = "ws://localhost:8080/lobby-socket";
+  const socketUrl = "ws://localhost:8080";
   const [readyForWS, setReadyForWS] = React.useState(false);
 
   /**
    *  Fetch session + chats Variables
    */
-
   const navigate = useNavigate();
   const { currentUser, setCurrentUser } = useCurrentUser();
 
@@ -60,8 +59,8 @@ export default function LobbyPage() {
     if (readyForWS) {
       console.log("Starting web socket");
       ws.current = new WebSocket(socketUrl);
-      ws.current.onopen = () => console.log("ws opened");
-      ws.current.onclose = () => console.log("ws closed");
+      // ws.current.onopen = () => console.log("ws opened");
+      // ws.current.onclose = () => console.log("ws closed");
 
       const wsCurrent = ws.current;
 
@@ -73,17 +72,15 @@ export default function LobbyPage() {
 
   // display messages ws sent
   React.useEffect(() => {
-    console.log("ws.current", ws.current);
     if (!ws.current) return;
 
-    console.log("getting message...");
+    // getting message
     ws.current.onmessage = (e) => {
       const messageData = JSON.parse(e.data);
-      console.log("e", messageData);
       setMessages(
         messages.concat([
           {
-            user: messageData.username,
+            user: messageData.user,
             message: messageData.message,
           },
         ])
@@ -94,31 +91,13 @@ export default function LobbyPage() {
   // send a message
   const sendMessage = (message) => {
     if (!ws.current) return;
-
-    ws.current.send(message);
-    setMessages(
-      messages.concat([
-        {
-          user: currentUser,
-          message: message,
-        },
-      ])
+    ws.current.send(
+      JSON.stringify({
+        user: currentUser,
+        message: message,
+      })
     );
   };
-
-  const sendMessageToWSAndChat = (message) => {
-    sendMessage(message);
-    setMessages(
-      messages.concat([
-        {
-          user: currentUser,
-          message: message,
-        },
-      ])
-    );
-  };
-
-  // const sendMessage = (message) => {};
 
   /**
    * HTML RETURN
@@ -148,7 +127,7 @@ export default function LobbyPage() {
           <CircularProgress />
         </div>
       ) : (
-        <Chat messages={messages} sendMessage={sendMessageToWSAndChat} />
+        <Chat messages={messages} sendMessage={sendMessage} />
       )}
     </div>
   );
