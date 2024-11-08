@@ -32,7 +32,7 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
-    cookie: { maxAge: MIN_30 }, // secure: true, httpOnly: true, secure: true, , sameSite: 'none'
+    cookie: { secure: true, maxAge: MIN_30, sameSite: 'none' }, // httpOnly: true
   })
 );
 

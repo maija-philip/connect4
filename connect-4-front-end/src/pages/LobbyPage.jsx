@@ -8,13 +8,15 @@ import { API_METHODS, getAPIData } from "../utils/callAPI";
 import { useNavigate } from "react-router-dom";
 import { useCurrentUser } from "../Connect4Router";
 import { CircularProgress } from "@mui/material";
+import GameRequestCountdown from "../components/GameRequestCountdown";
 
 export default function LobbyPage() {
   /**
    * Web Sockets Variables
    */
   const ws = React.useRef(null);
-  const socketUrl = "ws://localhost:8080";
+  //const socketUrl = "ws://localhost:8080";
+  const socketUrl = "ws://connect4service-281256585027.us-central1.run.app";
   const [readyForWS, setReadyForWS] = React.useState(false);
 
   /**
@@ -100,6 +102,18 @@ export default function LobbyPage() {
   };
 
   /**
+   * GAME REQUEST
+   */
+  const [isCountdownInProgress, setIsCountdownInProgress] =
+    React.useState(true);
+
+  const countdownFinished = () => {
+    setIsCountdownInProgress(false);
+    console.log("Countdown finished");
+    // send message that request expired
+  };
+
+  /**
    * HTML RETURN
    */
 
@@ -113,11 +127,15 @@ export default function LobbyPage() {
       <h1>
         Connect <span>4</span>
       </h1>
+      {isCountdownInProgress ? (
+        <GameRequestCountdown
+          requestedUsername="kelseyyy"
+          countdownFinished={countdownFinished}
+        />
+      ) : (
+        <></>
+      )}
       <button>Find Opponent</button>
-
-      {/* <Link to={`/game/123`}>
-        <p>play game</p>
-      </Link> */}
 
       {isChatLoading ? (
         <div

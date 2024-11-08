@@ -174,3 +174,12 @@ button,
 .chat-message-me > div {
   margin-left: 0em;
 }
+
+/* GAME REQUEST */
+.request-countdown {
+  margin-top: -0.5em;
+}
+.request-countdown span {
+  color: var(--yellow);
+  font-weight: bold;
+}
