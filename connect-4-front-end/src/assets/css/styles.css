@@ -14,7 +14,7 @@ label {
   text-align: left;
 }
 
-input {
+input, select {
   width: 100%;
   display: block;
   background-color: var(--background-variant);
@@ -182,4 +182,31 @@ button,
 .request-countdown span {
   color: var(--yellow);
   font-weight: bold;
+}
+
+.select-opponent-dialog {
+  text-align: center;
+}
+.select-opponent-dialog-loading {
+  text-align: center;
+  margin: auto;
+}
+.select-opponent-dialog select {
+  background-color: var(--background);
+  margin: 1.5em auto 2em auto;
+}
+.game-request-dialog span {
+  color: var(--pink);
+  font-weight: bold;
+}
+.game-request-dialog div {
+  display: flex;
+  flex-direction: row;
+}
+.game-request-dialog div button {
+  margin-top: 1em;
+}
+.game-request-dialog .yellow-button {
+  background-color: var(--yellow);
+  color: var(--background);
 }

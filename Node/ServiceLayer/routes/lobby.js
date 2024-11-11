@@ -17,13 +17,12 @@ const sanitizer = new Sanitizer();
 
 // GET /lobby
 router.get("/", async function (req, res) {
-  const result = await business.getAllLobbyMessages()
+  const result = await business.getAllLobbyMessages();
   res.status(200).json({ messages: result });
 });
 
 // POST /lobby/sendMessage
 router.post("/sendMessage", async function (req, res) {
-
   let username = req.session.user;
   let message = req.body.message;
 
@@ -41,7 +40,7 @@ router.post("/sendMessage", async function (req, res) {
 
   message = sanitizer.sanitize(message);
 
-  const errorMsg = await business.sendMessage(username, message)
+  const errorMsg = await business.sendMessage(username, message);
   if (errorMsg === error.somethingWentWrong) {
     res.status(500).json({ error: errorMsg });
     return;
@@ -51,18 +50,44 @@ router.post("/sendMessage", async function (req, res) {
     return;
   }
 
-  res.status(200).json({ status: "Sent", username: username, message: message});
+  res
+    .status(200)
+    .json({ status: "Sent", username: username, message: message });
 });
 
-// POST /lobby/sendGameRequest
-router.post("/sendGameRequest", async function (req, res) {
-  // Content-Type': 'application/json
-  //     { username: "username", token: 123 }
-  // 200 { message: “request sent” }
-  // 400 { error:“make sure both usernames exist and are in the lobby”}
-  // 500 { error: “something went wrong, please try again” }
+// POST /lobby/acceptGameRequest
+router.post("/acceptGameRequest", async function (req, res) {
+  let user = req.session.user;
+  let sender = req.body.sender;
+  let receiver = req.body.receiver;
 
-  res.json({ message: "send game request" });
+  if (!sender || !receiver || !user) {
+    res.status(400).json({
+      error: "Must include body params, sender & receiver in JSON format",
+    });
+    return;
+  }
+
+  sender = sanitizer.sanitize(sender);
+  receiver = sanitizer.sanitize(receiver);
+
+  if (sender !== user && receiver !== user) {
+    res.status(400).json({ error: "Invalid sender and receiver" });
+    return;
+  }
+
+  const result = await business.acceptGameRequest(sender, receiver);
+
+  if (result.error === error.somethingWentWrong) {
+    res.status(500).json({ error: result.error });
+    return;
+  }
+  if (result.error !== error.noError) {
+    res.status(400).json({ error: result.error });
+    return;
+  }
+
+  res.status(200).json({ gameId: result.gameId });
 });
 
 module.exports = router;

@@ -13,6 +13,7 @@ const {
   logoutUser,
   getUsersInLobby,
 } = require("../login.js");
+const { acceptGameRequest } = require("../lobby.js");
 
 // export to api request
 module.exports = function () {
@@ -47,7 +48,9 @@ module.exports = function () {
   }
 
   // Lobby
-
+  this.acceptGameRequest = async (sender, receiver) => {
+    return await acceptGameRequest(sender, receiver)
+  }
 
   // Game
 

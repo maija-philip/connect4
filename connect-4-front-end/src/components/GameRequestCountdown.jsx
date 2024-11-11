@@ -4,6 +4,8 @@ import "../assets/css/styles.css";
 
 import { useState, useEffect } from "react";
 
+// logic from: https://rathoreaparna678.medium.com/how-to-create-a-countdown-timer-with-react-89ef8466bd7c
+
 export default function GameRequestCountdown({
   requestedUsername,
   countdownFinished,
@@ -27,14 +29,6 @@ export default function GameRequestCountdown({
     return () => clearInterval(timer);
   }, [seconds, countdownFinished]);
 
-  // // Format the remaining time (e.g., “00:05:10” for 5 minutes and 10 seconds)
-  // const formatTime = (timeInSeconds) => {
-  // const minutes = Math.floor(timeInSeconds / 60)
-  // .toString()
-  // .padStart(2, ‘0’);
-  // const seconds = (timeInSeconds % 60).toString().padStart(2, ‘0’);
-  // return `${minutes}:${seconds}`;
-  // };
 
   return (
     <p className="request-countdown">

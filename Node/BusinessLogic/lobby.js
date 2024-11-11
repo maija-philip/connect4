@@ -32,10 +32,10 @@ async function acceptGameRequest(sender, receiver) {
     
     // verify receiver username exists
     const result = await db.getUser(receiver)
-    console.log(result)
+    const result2 = await db.getUser(sender)
 
-    if (receiver.length > 60 || result.length < 1 || result[0].inLobby == false) {
-        return error.usernameDNE
+    if (receiver.length > 60 || sender.length > 60 || result.length < 1 || result[0].inLobby == false || result2.length < 1 || result2[0].inLobby == false) {
+        return {error: error.usernameDNE}
     }
 
     // delete game request
