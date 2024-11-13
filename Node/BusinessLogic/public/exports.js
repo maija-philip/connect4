@@ -3,7 +3,7 @@
     Connect 4
 */
 
-const { move } = require("../game.js");
+const { move, getGameFromDB } = require("../game.js");
 const { getLobbyMessages, storeMessage } = require("../chat.js");
 const {
   getUserFromUsername,
@@ -24,7 +24,7 @@ module.exports = function () {
   };
   this.getLobbyUsers = async () => {
     return await getUsersInLobby()
-  }
+  };
   this.validateLogin = async (username, password) => {
     return await login(username, password);
   };
@@ -36,25 +36,29 @@ module.exports = function () {
   };
   this.logout = async (username) => {
     return await logoutUser(username)
-  }
+  };
 
   // Chat
   this.getAllLobbyMessages = async () => {
     return await getLobbyMessages();
-  }
+  };
 
   this.sendMessage = async (username, message) => {
     return await storeMessage(username, message)
-  }
+  };
 
   // Lobby
   this.acceptGameRequest = async (sender, receiver) => {
     return await acceptGameRequest(sender, receiver)
-  }
+  };
 
   // Game
 
   this.validateMove = (x, y) => {
     return move(x, y);
+  };
+
+  this.getGame = async (gameId) => {
+    return await getGameFromDB(gameId);
   };
 };

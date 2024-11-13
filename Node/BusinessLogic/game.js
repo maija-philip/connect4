@@ -37,7 +37,7 @@ async function createNewGame(sender, receiver) {
     return error.somethingWentWrong;
   }
 
-  const gameId = result.insertId
+  const gameId = result.insertId;
 
   // remove players from lobby (they are no longer in the chat or available for game requests)
   result = await db.changeInLobbyStatus(false, sender);
@@ -52,6 +52,15 @@ async function createNewGame(sender, receiver) {
   return { error: error.noError, gameId: gameId };
 }
 
+async function getGameFromDB(gameId) {
+  result = await db.getGame(gameId);
+  if (result.length < 1) {
+    return { error: error.gameDNE };
+  }
+
+  return { error: error.noError, game: result };
+}
+
 async function move(x, y) {
   // check if it's within the board
   // 7 across
@@ -64,4 +73,4 @@ async function move(x, y) {
   return { valid: true, x: 0, y: 0 };
 }
 
-module.exports = { move, createNewGame };
+module.exports = { createNewGame, getGameFromDB, move };

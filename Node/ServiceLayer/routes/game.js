@@ -6,31 +6,27 @@
 
 let express = require("express");
 const router = express.Router();
-const BusinessLayer = require("../../BusinessLogic/public/exports.js");
-const businessLayer = new BusinessLayer();
 
+const BusinessLogic = require("../../BusinessLogic/public/exports.js");
+const business = new BusinessLogic();
+
+const Error = require("../../BusinessLogic/public/errors.js");
+const error = new Error();
+
+const Sanitizer = require("../../BusinessLogic/sanitize.js");
+const sanitizer = new Sanitizer();
 
 // GET /game/{gameId}
 router.get("/:gameId", async function (req, res) {
+    const result = await business.getGame(req.params.gameId);
 
-    // 200 {
-    //         gameId: 123,
-    //         playerPink: “username”,
-    //         playerYellow: “username”,
-    //         turn: 1 ,
-    //         winner: 0,
-    //         row0: 000000
-    //         row1: 000000
-    //         row2: 000000
-    //         row3: 000000
-    //         row4: 000000
-    //         row5: 002000
-    //         row6: 001210
-    //     }
-    // 404 { error: “game not found” }
+    if (result.error !== error.noError) {
+      res.status(400).json({ error: result.error });
+      return;
+    }
+  
+    res.status(200).json({ game: result.game });
 
-    console.log(`Params: ${req.params.gameId}`);
-    res.json({message: "game"});
 });
 
 

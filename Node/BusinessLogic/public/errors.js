@@ -14,4 +14,5 @@ module.exports = function () {
     this.invalidToken = "Token is invalid"
     this.messageTooLong = "Message needs to be 200 characters or less"
     this.usernameDNE = "This username is not valid or doesn't exist"
+    this.gameDNE = "This game is not valid or doesn't exist"
 }

@@ -210,3 +210,30 @@ button,
   background-color: var(--yellow);
   color: var(--background);
 }
+
+/* GAME PAGE */
+.pink {
+  color: var(--pink);
+}
+.yellow {
+  color: var(--yellow);
+}
+.gameWrap {
+  width: 90%;
+  margin: auto;
+  text-align: center;
+}
+.gameLoadingWrap {
+  margin: auto;
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+.board {
+  width: 60%;
+  margin: auto;
+}
+.board img {
+  width: 100%;
+}
