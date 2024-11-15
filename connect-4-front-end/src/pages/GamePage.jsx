@@ -10,7 +10,6 @@ import { NO_PLAYER, PLAYER_PINK, PLAYER_YELLOW } from "../utils/gameConst";
 import Board from "../components/Board";
 import { CircularProgress } from "@mui/material";
 import GameStatus from "../components/GameStatus";
-import DraggableBoardPiece from "../components/DraggableBoardPiece";
 import GameChat from "../components/GameChat";
 
 export default function GamePage() {
@@ -106,9 +105,8 @@ export default function GamePage() {
             <span className={isPink ? "pink" : "yellow"}>{currentUser}</span> vs{" "}
             <span className={isPink ? "yellow" : "pink"}>{opponent}</span>
           </h1>
-          <Board board={board} />
+          <Board board={board} isPink={isPink} />
           <GameStatus opponent={opponent} isPink={isPink} isYourTurn={isYourTurn} winner={winner} />
-          <DraggableBoardPiece isPink={isPink} />
           <GameChat gameId={gameId} isPink={isPink}/>
         </>
       )}

@@ -237,3 +237,9 @@ button,
 .board img {
   width: 100%;
 }
+#drop-pieces-button:hover {
+  filter: brightness(125%);
+}
+#drop-pieces-button:active {
+  filter: brightness(75%);
+}
