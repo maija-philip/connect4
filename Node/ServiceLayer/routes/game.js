@@ -30,6 +30,9 @@ router.get("/:gameId", async function (req, res) {
 });
 
 
+// TODO 
+// - change this one to get game messages 
+
 // POST /game/{gameId}/getTurn
 router.post("/:gameId/getTurn", async function (req, res) {
 
@@ -44,13 +47,15 @@ router.post("/:gameId/getTurn", async function (req, res) {
 
 // POST /game/{gameId}/takeTurn
 router.post("/:gameId/takeTurn", async function (req, res) {
+    // take in move column and game id
+    // get username from session
 
-    if (req.body && !req.body.xMove && !req.body.yMove) {
-        res.status(400).json({ error: "Must include 'xMove' and 'yMove' in request body as JSON"});
+    if (req.body && !req.body.moveColumn) {
+        res.status(400).json({ error: "Must include 'moveColumn' in request body as JSON"});
         return;
     } 
     
-    let validMove = businessLayer.validateMove(req.body.xMove, req.body.yMove)
+    let validMove = businessLayer.validateMove(req.body.moveColumn)
     if (!validMove.valid) {
         res.status(400).json({ error: "Must be a valid move. Board is 7x6 tiles and you can not move on top of other tiles"});
         return;
@@ -78,6 +83,7 @@ router.post("/:gameId/forfeit", async function (req, res) {
 });
 
 
+// TODO Don't need this, this will be done with websockets
 // POST /game/{gameId}/sendMessage
 router.post("/:gameId/sendMessage", async function (req, res) {
     // don't need to check if path params exist because it does that automatically

@@ -1,23 +1,20 @@
 import * as React from "react";
 import "../assets/css/constants.css";
 import "../assets/css/styles.css";
-// import svgBoard from "./../assets/media/board.svg";
 import SvgBoard from "./SvgBoard";
 import dropBoardButton from "./../assets/media/DropBoardButton.svg";
 import DraggableBoardPiece from "./DraggableBoardPiece";
 
-
-export default function Board({ board, isPink }) {
-
-  const [isDragging, setIsDragging] = React.useState(false);
+export default function Board({ ws, board, isPink, isYourTurn, gameId }) {
+  const [isPieceShown, setIsPieceShown] = React.useState(isYourTurn);
 
   const forfeit = () => {
-    console.log("Drop Pieces & Forfeit")
-  }
+    console.log("Drop Pieces & Forfeit");
+  };
 
   return (
     <div className="board">
-      <SvgBoard board={board}/>
+      <SvgBoard board={board} />
       <br />
       <br />
       <img
@@ -27,7 +24,18 @@ export default function Board({ board, isPink }) {
         onClick={forfeit}
         data-pin-no-hover="true"
       />
-      <DraggableBoardPiece isPink={isPink} setIsDragging={setIsDragging} />
+      {isPieceShown ? (
+        <DraggableBoardPiece
+          ws={ws}
+          isPink={isPink}
+          gameId={gameId}
+          disappear={() => {
+            setIsPieceShown(false);
+          }}
+        />
+      ) : (
+        <></>
+      )}
     </div>
   );
 }

@@ -30,8 +30,14 @@ export default function GamePage() {
   /**
    * Set the game data from the api game result
    */
-  const setGameData = React.useCallback(
-    (game) => {
+  const getGameData = React.useCallback(
+    async () => {
+      const result = await getAPIData(`/game/${gameId}`, API_METHODS.get, {});
+      if (result.error) {
+        return;
+      }
+      let game = result.game[0]
+
       // are you pink or yellow? and who is your opponent
       if (game.playerPink === currentUser) {
         setIsPink(true);
@@ -59,16 +65,15 @@ export default function GamePage() {
 
       setBoard(game.gameboard.board);
     },
-    [currentUser, isPink, navigate]
+    [gameId, currentUser, isPink, navigate]
   );
 
   /**
-   * Initial Use Effect
+   * Initial Use Effect, get session + game data
    */
   React.useEffect(() => {
     async function fetchData() {
-
-      setIsLoading(true)
+      setIsLoading(true);
 
       // check session
       let result = await getAPIData("/session", API_METHODS.get, {});
@@ -82,16 +87,60 @@ export default function GamePage() {
         return;
       }
       // get game data
-      result = await getAPIData(`/game/${gameId}`, API_METHODS.get, {});
-      if (result.error) {
-        return;
-      }
-      setGameData(result.game[0]);
-      setIsLoading(false)
+      await getGameData()
+      setIsLoading(false);
     }
 
     fetchData();
-  }, [navigate, setGameData, gameId, currentUser, setCurrentUser]);
+  }, [navigate, getGameData, gameId, currentUser, setCurrentUser]);
+
+  /**
+   *  Web Sockets
+   */
+
+  // web socket variables
+  const ws = React.useRef(null);
+  //const socketUrl = "ws://localhost:8080";
+  const socketUrl = "ws://connect4service-281256585027.us-central1.run.app";
+
+  // start websocket
+  React.useEffect(() => {
+    console.log("Starting web socket");
+    ws.current = new WebSocket(socketUrl);
+    // ws.current.onopen = () => console.log("ws opened");
+    // ws.current.onclose = () => console.log("ws closed");
+
+    const wsCurrent = ws.current;
+    return () => {
+      wsCurrent.close();
+    };
+  }, []);
+
+  const delay = ms => new Promise(res => setTimeout(res, ms));
+
+  // see when to reload game data
+  React.useEffect(() => {
+    if (!ws.current) return;
+
+    // getting message
+    ws.current.onmessage = async (e) => {
+      const messageData = JSON.parse(e.data);
+
+      // has turn been taken?
+      if (
+        messageData.tookTurn &&
+        messageData.gameId &&
+        messageData.gameId === gameId
+      ) {
+        // reload game until turn is changed
+        let originalTurn = isYourTurn
+        while (originalTurn === isYourTurn) {
+          await getGameData()
+          await delay(1000)
+        }
+      }
+    };
+  }, [ws, gameId, getGameData, isYourTurn]);
 
   return (
     <div className="gameWrap">
@@ -105,9 +154,22 @@ export default function GamePage() {
             <span className={isPink ? "pink" : "yellow"}>{currentUser}</span> vs{" "}
             <span className={isPink ? "yellow" : "pink"}>{opponent}</span>
           </h1>
-          <Board board={board} isPink={isPink} />
-          <GameStatus opponent={opponent} isPink={isPink} isYourTurn={isYourTurn} winner={winner} />
-          <GameChat gameId={gameId} isPink={isPink}/>
+          <Board
+            ws={ws}
+            board={board}
+            isPink={isPink}
+            isYourTurn={isYourTurn}
+            gameId={gameId}
+          />
+          <GameStatus
+            opponent={opponent}
+            isPink={isPink}
+            isYourTurn={isYourTurn}
+            winner={winner}
+          />
+          <br />
+          <br />
+          <GameChat ws={ws} gameId={gameId} isPink={isPink} />
         </>
       )}
     </div>

@@ -6,35 +6,17 @@ import MessageInput from "../components/MessageInput.jsx";
 import ChatMessage from "./ChatMessage.jsx";
 import { useCurrentUser } from "../Connect4Router.jsx";
 
-export default function GameChat({ gameId, isPink }) {
+export default function GameChat({ ws, gameId, isPink }) {
   const { currentUser } = useCurrentUser();
   const [messages, setMessages] = React.useState([]);
 
-  // web socket variables
-  const ws = React.useRef(null);
-  //const socketUrl = "ws://localhost:8080";
-  const socketUrl = "ws://connect4service-281256585027.us-central1.run.app";
-
-/**
- * TODO: 
- * - store old messages -> server, 
- * - put ready for websocket back in, 
- * - save messages for 10m, 
- * - get old messages on load 
- */
-
-  // start websocket
-  React.useEffect(() => {
-    console.log("Starting web socket");
-    ws.current = new WebSocket(socketUrl);
-    // ws.current.onopen = () => console.log("ws opened");
-    // ws.current.onclose = () => console.log("ws closed");
-
-    const wsCurrent = ws.current;
-    return () => {
-      wsCurrent.close();
-    };
-  }, []);
+  /**
+   * TODO:
+   * - store old messages -> server,
+   * - put ready for websocket back in,
+   * - save messages for 10m,
+   * - get old messages on load
+   */
 
   // display messages ws sent
   React.useEffect(() => {
@@ -60,7 +42,7 @@ export default function GameChat({ gameId, isPink }) {
         );
       }
     };
-  }, [messages, gameId]);
+  }, [ws, messages, gameId]);
 
   // send a message
   const sendMessage = (message) => {
@@ -76,7 +58,6 @@ export default function GameChat({ gameId, isPink }) {
 
   return (
     <div className="chat">
-      <MessageInput id="gameChat" sendMessage={sendMessage} />
       {messages.length < 1 ? <p>Start the conversation!</p> : <></>}
 
       {[...messages].reverse().map((item, index) => {
@@ -96,6 +77,8 @@ export default function GameChat({ gameId, isPink }) {
           />
         );
       })}
+
+      <MessageInput id="gameChat" sendMessage={sendMessage} />
     </div>
   );
 }

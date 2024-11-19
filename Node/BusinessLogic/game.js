@@ -61,11 +61,11 @@ async function getGameFromDB(gameId) {
   return { error: error.noError, game: result };
 }
 
-async function move(x, y) {
+async function move(column) {
   // check if it's within the board
   // 7 across
   // 6 down
-  if (x > 6 || y > 5) {
+  if (column < 0 || column > 7) {
     return { valid: false };
   }
   // check if it's empty

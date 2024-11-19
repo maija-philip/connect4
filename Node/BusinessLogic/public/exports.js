@@ -54,8 +54,8 @@ module.exports = function () {
 
   // Game
 
-  this.validateMove = (x, y) => {
-    return move(x, y);
+  this.validateMove = (column) => {
+    return move(column);
   };
 
   this.getGame = async (gameId) => {
