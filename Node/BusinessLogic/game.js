@@ -61,6 +61,31 @@ async function getGameFromDB(gameId) {
   return { error: error.noError, game: result };
 }
 
+
+async function sendGameMessage(user, message, gameId) {
+  if (message.length > 200) {
+    return error.messageTooLong
+  }
+
+  result = await db.sendGameMessage(user, gameId, message);
+  if (result.length < 1) {
+    return { error: error.somethingWentWrong };
+  }
+
+  return { error: error.noError, message: "sent" };
+}
+
+async function getGameMessages(gameId) {
+  result = await db.getGame(gameId);
+  if (result.length < 1) {
+    return { error: error.gameDNE };
+  }
+  
+  result = await db.getLobbyMessages();
+  return { error: error.noError, messages: result}
+
+}
+
 async function move(column) {
   // check if it's within the board
   // 7 across
@@ -73,4 +98,10 @@ async function move(column) {
   return { valid: true, x: 0, y: 0 };
 }
 
-module.exports = { createNewGame, getGameFromDB, move };
+// on end of game
+function deleteGame(gameId) {
+  db.deleteGame(gameId)
+  db.deleteGameMessages(gameId)
+}
+
+module.exports = { createNewGame, getGameFromDB, sendGameMessage, getGameMessages, move, deleteGame };

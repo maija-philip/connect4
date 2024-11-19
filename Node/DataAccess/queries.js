@@ -135,7 +135,7 @@ module.exports = function () {
     );
   };
 
-  this.sendGameMessage = async (username, message) => {
+  this.sendGameMessage = async (username, gameId, message) => {
     return await conn.runSQL(
       "INSERT INTO connect_4_game_message (user, gameId, message) VALUES ( ?, ?, ? ) ",
       [username, gameId, message]
@@ -144,5 +144,12 @@ module.exports = function () {
 
   this.getGameMessages = async (gameId) => {
     return await conn.runSQL("SELECT * FROM connect_4_game_message WHERE gameId = ? ", [gameId]);
+  };
+
+  this.deleteGameMessages = async (gameId) => {
+    return await conn.runSQL("DELETE FROM connect_4_game_message WHERE gameId = ? ", [gameId]);
+  };
+  this.deleteGame = async (gameId) => {
+    return await conn.runSQL("DELETE FROM connect_4_current_games WHERE gameId = ? ", [gameId]);
   };
 };
