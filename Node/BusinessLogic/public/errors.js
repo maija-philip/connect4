@@ -15,4 +15,5 @@ module.exports = function () {
     this.messageTooLong = "Message needs to be 200 characters or less"
     this.usernameDNE = "This username is not valid or doesn't exist"
     this.gameDNE = "This game is not valid or doesn't exist"
+    this.columnFull = "This column is full, you can not move here"
 }

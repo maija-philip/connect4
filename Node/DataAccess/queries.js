@@ -128,10 +128,10 @@ module.exports = function () {
     );
   };
 
-  this.setWinner = async (usernameCode, gameId) => {
+  this.setWinner = async (gameId, playerCode, gameboard) => {
     return await conn.runSQL(
-      "UPDATE connect_4_current_games SET winner = ? WHERE gameId = ? ",
-      [usernameCode, gameId]
+      "UPDATE connect_4_current_games SET winner = ? , gameboard = ? WHERE gameId = ? ",
+      [playerCode, gameboard, gameId]
     );
   };
 

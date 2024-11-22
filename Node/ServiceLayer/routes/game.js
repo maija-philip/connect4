@@ -53,7 +53,7 @@ router.post("/:gameId/takeTurn", async function (req, res) {
     return;
   }
 
-  let validMove = businessLayer.validateMove(req.body.moveColumn);
+  let validMove = businessLayer.validateMove(req.params.gameId, req.body.moveColumn);
   if (!validMove.valid) {
     res
       .status(400)

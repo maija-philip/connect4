@@ -53,7 +53,7 @@ module.exports = function () {
   };
 
   // Game
-  this.validateMove = (column) => {
+  this.validateMove = (gameId, column) => {
     return move(column);
   };
 

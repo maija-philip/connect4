@@ -1,3 +1,5 @@
+import { COLUMN_NUM } from "./gameConst";
+
 /**
  * See which column of the board, the mouse is in.
  * @param {*} event 
@@ -47,7 +49,7 @@ export const checkDropPosition = (event) => {
 
     // what column is the mouse in?
     // 7 Columns
-    let columnWidth = newBoardWidth / 7;
+    let columnWidth = newBoardWidth / COLUMN_NUM;
     let column = -1;
 
     for (let i = 1; i <= 7; i++) {

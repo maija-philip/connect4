@@ -7,22 +7,27 @@ const Error = require("./public/errors.js");
 const error = new Error();
 
 const Database = require("./../DataAccess/queries.js");
+const {
+  PLAYER_PINK,
+  PLAYER_YELLOW,
+  NO_PLAYER,
+  PLAYER_PINK_WINNING_SPOT,
+  PLAYER_YELLOW_WINNING_SPOT,
+  COLUMN_NUM,
+  ROW_NUM,
+} = require("./public/gameConsts.js");
 const db = new Database();
-
-const PLAYER_PINK = 1,
-  PLAYER_YELLOW = 2,
-  NO_PLAYER = 0;
 
 async function createNewGame(sender, receiver) {
   console.log("Create new game");
 
   const startingGameboard = [
-    new Array(7).fill(NO_PLAYER),
-    new Array(7).fill(NO_PLAYER),
-    new Array(7).fill(NO_PLAYER),
-    new Array(7).fill(NO_PLAYER),
-    new Array(7).fill(NO_PLAYER),
-    new Array(7).fill(NO_PLAYER),
+    new Array(COLUMN_NUM).fill(NO_PLAYER),
+    new Array(COLUMN_NUM).fill(NO_PLAYER),
+    new Array(COLUMN_NUM).fill(NO_PLAYER),
+    new Array(COLUMN_NUM).fill(NO_PLAYER),
+    new Array(COLUMN_NUM).fill(NO_PLAYER),
+    new Array(COLUMN_NUM).fill(NO_PLAYER),
   ];
 
   let result = await db.createGame(
@@ -61,10 +66,9 @@ async function getGameFromDB(gameId) {
   return { error: error.noError, game: result };
 }
 
-
 async function sendGameMessage(user, message, gameId) {
   if (message.length > 200) {
-    return error.messageTooLong
+    return error.messageTooLong;
   }
 
   result = await db.sendGameMessage(user, gameId, message);
@@ -80,28 +84,21 @@ async function getGameMessages(gameId) {
   if (result.length < 1) {
     return { error: error.gameDNE };
   }
-  
+
   result = await db.getLobbyMessages();
-  return { error: error.noError, messages: result}
-
-}
-
-async function move(column) {
-  // check if it's within the board
-  // 7 across
-  // 6 down
-  if (column < 0 || column > 7) {
-    return { valid: false };
-  }
-  // check if it's empty
-  // check if it should fall
-  return { valid: true, x: 0, y: 0 };
+  return { error: error.noError, messages: result };
 }
 
 // on end of game
 function deleteGame(gameId) {
-  db.deleteGame(gameId)
-  db.deleteGameMessages(gameId)
+  db.deleteGame(gameId);
+  db.deleteGameMessages(gameId);
 }
 
-module.exports = { createNewGame, getGameFromDB, sendGameMessage, getGameMessages, move, deleteGame };
+module.exports = {
+  createNewGame,
+  getGameFromDB,
+  sendGameMessage,
+  getGameMessages,
+  deleteGame,
+};
