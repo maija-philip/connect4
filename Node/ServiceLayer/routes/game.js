@@ -43,9 +43,13 @@ router.get("/:gameId/getMessages", async function (req, res) {
 
 // POST /game/{gameId}/takeTurn
 router.post("/:gameId/takeTurn", async function (req, res) {
-  // take in move column and game id
-  // get username from session
+  // check session
+  if (req.session.user == null) {
+    res.status(404).json({ error: `No session` });
+    return;
+  }
 
+  // check if column included
   if (req.body && !req.body.moveColumn) {
     res
       .status(400)
@@ -53,30 +57,31 @@ router.post("/:gameId/takeTurn", async function (req, res) {
     return;
   }
 
-  let validMove = businessLayer.validateMove(req.params.gameId, req.body.moveColumn);
+  // send off to backend
+  let validMove = businessLayer.validateMove(
+    req.params.gameId,
+    req.body.moveColumn
+  );
   if (!validMove.valid) {
-    res
-      .status(400)
-      .json({
-        error:
-          "Must be a valid move. Board is 7x6 tiles and you can not move on top of other tiles",
-      });
+    res.status(400).json({
+      error:
+        "Must be a valid move. Board is 7x6 tiles and you can not move on top of other tiles. Valid column values include: 0, 1, 2, 3, 4, 5, 6",
+    });
     return;
   }
 
-  // Content-Type': 'application/json
-  // 		{ token:  123, xMove: 0, yMove: 6 }
-  // 200 { message: “Turn taken” }
-  // 404 { error: “token invalid” }
-
-  console.log(`Params: ${req.params.gameId}`);
-  res
-    .status(200)
-    .json({
-      message: "Turn Taken, Successfull Move",
-      x: validMove.x,
-      y: validMove.y,
+  // if error
+  if (validMove.error && validMove.error === error.somethingWentWrong) {
+    res.status(500).json({
+      error: error.somethingWentWrong,
     });
+    return;
+  } else if (validMove.error) {
+    res.status(400).json(validMove);
+    return;
+  }
+
+  res.status(200).json(validMove);
 });
 
 // POST /game/{gameId}/forfeit

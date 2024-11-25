@@ -23,15 +23,15 @@ async function move(gameId, column) {
   // check if it's within the board
   // 7 across
   // 6 down
-  if (column <= 0 || column > 7) {
+  if (column < 0 || column >= 7) {
     return { valid: false };
   }
 
   // get the gameboard from the db
-  const game = db.getGame(gameId);
+  const game = await db.getGame(gameId);
   console.log("game: ", game)
   if (game.length < 1) {
-    return { error: error.gameDNE };
+    return { valid: false, error: error.gameDNE };
   }
   const board = game[0].gameboard.board;
   const whoseTurn = game[0].turn;
@@ -39,7 +39,7 @@ async function move(gameId, column) {
   // drop the piece down the column
   let dropTo = ROW_NUM;
   for (let y = ROW_NUM - 1; y >= 0; y--) {
-    if (board[y][column - 1] != NO_PLAYER) {
+    if (board[y][column] != NO_PLAYER) {
       break;
     }
     dropTo = y;
@@ -47,11 +47,11 @@ async function move(gameId, column) {
 
   // is column full?
   if (dropTo === ROW_NUM) {
-    return { error: error.columnFull };
+    return { valid: false, error: error.columnFull };
   }
 
   // update game in db
-  board[dropTo][column - 1] = whoseTurn;
+  board[dropTo][column] = whoseTurn;
   let newTurn = whoseTurn === PLAYER_PINK ? PLAYER_YELLOW : PLAYER_PINK;
   await db.takeTurn(gameId, newTurn, JSON.stringify({ board: board }));
 
@@ -59,11 +59,11 @@ async function move(gameId, column) {
   let hasWinner = checkIfWinner(
     gameId,
     board,
-    { x: column - 1, y: dropTo },
+    { x: column, y: dropTo },
     whoseTurn
   );
 
-  return { valid: true, x: column - 1, y: dropTo, hasWinner: hasWinner };
+  return { valid: true, x: column, y: dropTo, hasWinner: hasWinner };
 }
 
 async function checkIfWinner(gameId, board, lastMove, playerKey) {

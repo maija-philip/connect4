@@ -52,7 +52,7 @@ export const checkDropPosition = (event) => {
     let columnWidth = newBoardWidth / COLUMN_NUM;
     let column = -1;
 
-    for (let i = 1; i <= 7; i++) {
+    for (let i = 1; i <= COLUMN_NUM; i++) {
       let columnEnd = newBoardLeft + columnWidth * i;
       if (clientX < columnEnd) {
         // column found
@@ -66,5 +66,5 @@ export const checkDropPosition = (event) => {
       return emptyReturn;
     }
 
-    return {isValid: true, column: column}
+    return {isValid: true, column: column - 1}
   };
