@@ -44,10 +44,10 @@ router.get("/:gameId/getMessages", async function (req, res) {
 // POST /game/{gameId}/takeTurn
 router.post("/:gameId/takeTurn", async function (req, res) {
   // check session
-  // if (req.session.user == null) {
-  //   res.status(404).json({ error: `No session` });
-  //   return;
-  // }
+  if (req.session.user == null) {
+    res.status(404).json({ error: `No session` });
+    return;
+  }
 
   // check if column included
   if (req.body && req.body.moveColumn === undefined) {
@@ -59,6 +59,7 @@ router.post("/:gameId/takeTurn", async function (req, res) {
 
   // send off to backend
   let validMove = await business.validateMove(
+    req.session.user,
     req.params.gameId,
     req.body.moveColumn
   );
@@ -86,35 +87,22 @@ router.post("/:gameId/takeTurn", async function (req, res) {
 
 // POST /game/{gameId}/forfeit
 router.post("/:gameId/forfeit", async function (req, res) {
-  // Content-Type': 'application/json
-  //     { token:  123 }
-  // 200 { message: “Game ended, your opponent won” }
-  // 404 { error: “token invalid” }
-
-  console.log(`Params: ${req.params.gameId}`);
-  res.json({ message: "forfeit" });
-});
-
-// TODO Don't need this, this will be done with websockets
-// POST /game/{gameId}/sendMessage
-router.post("/:gameId/sendMessage", async function (req, res) {
-  // don't need to check if path params exist because it does that automatically
-  if (req.body && !req.body.message) {
-    res
-      .status(400)
-      .json({ error: "Must include 'message' in request body as JSON" });
+  // check session
+  if (req.session.user == null) {
+    res.status(404).json({ error: `No session` });
     return;
   }
 
-  // Content-Type': 'application/json
-  // 		{ message: “message”, token: 123 }
+  // send off to backend
+  let result = await business.forfeitGame(req.session.user, req.params.gameId)
 
-  console.log(`Game Id: ${req.params.gameId}`);
-  console.log(`Body: ${JSON.stringify(req.body)}`);
+  // if error
+   if (result.error !== error.noError) {
+    res.status(400).json(result.error);
+    return;
+  }
 
-  res.status(200).json({ message: "Message Sent" });
-  // res.status(401).json({ error: "Token Invalid"});
-  // res.status(500).json({ error: "something went wrong, please try again"});
+  res.status(200).json({"message": "Your opponent has won"});
 });
 
 module.exports = router;

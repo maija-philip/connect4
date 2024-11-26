@@ -89,8 +89,46 @@ async function getGameMessages(gameId) {
   return { error: error.noError, messages: result };
 }
 
+async function forfeit(username, gameId) {
+  result = await db.getGame(gameId);
+  if (result.length < 1) {
+    return { error: error.gameDNE };
+  }
+
+  let game = result[0];
+
+  // check if username is player
+  if (game.playerPink !==  username && game.playerYellow !== username ) {
+    return { error: error.notYourGame };
+  }
+
+  // check if there is already a winner
+  if (game.winner !== NO_PLAYER) {
+    return { error: error.noTurnAfterWinner }
+  }
+
+  // set winner
+  let winnerCode = game.playerPink === username ? 2 : 1
+  await db.setWinner(gameId, winnerCode, game.gameboard);
+
+  return {error: error.noError}
+}
+
 // on end of game
-function deleteGame(gameId) {
+async function deleteGame(username, gameId) {
+  game = await db.getGame(gameId);
+  if (game.length < 1) {
+    return { error: error.gameDNE };
+  }
+
+  if (game[0].playerPink !==  username && game[0].playerYellow !== username ) {
+    return { error: error.notYourGame };
+  }
+
+  if (game[0].winner === NO_PLAYER) {
+    return { error: error.canNotDeleteInProgressGame }
+  }
+
   db.deleteGame(gameId);
   db.deleteGameMessages(gameId);
 }
@@ -100,5 +138,6 @@ module.exports = {
   getGameFromDB,
   sendGameMessage,
   getGameMessages,
+  forfeit,
   deleteGame,
 };

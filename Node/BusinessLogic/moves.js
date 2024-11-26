@@ -19,7 +19,7 @@ const {
   ROW_NUM,
 } = require("./public/gameConsts.js");
 
-async function move(gameId, column) {
+async function move(username, gameId, column) {
   // check if it's within the board
   // 7 across
   // 6 down
@@ -36,7 +36,14 @@ async function move(gameId, column) {
   const whoseTurn = game[0].turn;
 
   // check user is whose turn it is
-  // TODO
+  if ((whoseTurn === PLAYER_PINK && game[0].playerPink !== username) || (whoseTurn === PLAYER_YELLOW && game[0].playerYellow !== username)) {
+    return { error: error.notYourGame }
+  }
+
+  // check if there is already a winner
+  if (game[0].winner !== NO_PLAYER) {
+    return { error: error.noTurnAfterWinner }
+  }
 
   // drop the piece down the column
   let dropTo = ROW_NUM;
@@ -97,17 +104,6 @@ async function checkIfWinner(gameId, board, lastMove, playerKey) {
   let count6 = checkDirection(-1, 1, board, playerKey, lastMove) || [];
   let count7 = checkDirection(0, 1, board, playerKey, lastMove) || [];
   let count8 = checkDirection(1, 1, board, playerKey, lastMove) || [];
-
-  // TODO REMOVE
-  console.log("Last move:", lastMove);
-  console.log("Count 1:", count1);
-  console.log("Count 2:", count2);
-  console.log("Count 3:", count3);
-  console.log("Count 4:", count4);
-  console.log("Count 5:", count5);
-  console.log("Count 6:", count6);
-  console.log("Count 7:", count7);
-  console.log("Count 8:", count8);
 
   // add them up
 

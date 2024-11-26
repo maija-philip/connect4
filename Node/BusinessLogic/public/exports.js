@@ -3,7 +3,7 @@
     Connect 4
 */
 
-const { getGameFromDB, getGameMessages } = require("../game.js");
+const { getGameFromDB, getGameMessages, forfeit, deleteGame } = require("../game.js");
 const { getLobbyMessages, storeMessage } = require("../chat.js");
 const {
   getUserFromUsername,
@@ -54,8 +54,8 @@ module.exports = function () {
   };
 
   // Game
-  this.validateMove = (gameId, column) => {
-    return move(gameId, column);
+  this.validateMove = (username, gameId, column) => {
+    return move(username, gameId, column);
   };
 
   this.getGame = async (gameId) => {
@@ -68,5 +68,13 @@ module.exports = function () {
 
   this.getAllGameMessages = async (gameId) => {
     return await getGameMessages(gameId)
+  }
+
+  this.forfeitGame = async (username, gameId) => {
+    return await forfeit(username, gameId)
+  }
+
+  this.deleteGameWithId = async (username, gameId) => {
+    return await deleteGame(username, gameId)
   }
 };

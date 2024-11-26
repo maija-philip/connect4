@@ -16,4 +16,7 @@ module.exports = function () {
     this.usernameDNE = "This username is not valid or doesn't exist"
     this.gameDNE = "This game is not valid or doesn't exist"
     this.columnFull = "This column is full, you can not move here"
+    this.notYourGame = "You can not make a edit a game you are not a member of"
+    this.noTurnAfterWinner = "Once the game is won, you can not play more turns"
+    this.canNotDeleteInProgressGame = "Can not delete a game that is in progress"
 }
