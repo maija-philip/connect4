@@ -64,7 +64,7 @@ console.log("Express started on port 8080");
 const BusinessLogic = require("../BusinessLogic/public/exports.js");
 const business = new BusinessLogic();
 
-const Sanitizer = require("../../BusinessLogic/sanitize.js");
+const Sanitizer = require("./..//BusinessLogic/sanitize.js");
 const sanitizer = new Sanitizer();
 
 var WebSocketServer = require("ws").Server;

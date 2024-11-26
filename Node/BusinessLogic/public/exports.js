@@ -3,7 +3,7 @@
     Connect 4
 */
 
-const { move, getGameFromDB, getGameMessages } = require("../game.js");
+const { getGameFromDB, getGameMessages } = require("../game.js");
 const { getLobbyMessages, storeMessage } = require("../chat.js");
 const {
   getUserFromUsername,
@@ -14,6 +14,7 @@ const {
   getUsersInLobby,
 } = require("../login.js");
 const { acceptGameRequest } = require("../lobby.js");
+const { move } = require("../moves.js");
 
 // export to api request
 module.exports = function () {
@@ -54,7 +55,7 @@ module.exports = function () {
 
   // Game
   this.validateMove = (gameId, column) => {
-    return move(column);
+    return move(gameId, column);
   };
 
   this.getGame = async (gameId) => {

@@ -44,13 +44,13 @@ router.get("/:gameId/getMessages", async function (req, res) {
 // POST /game/{gameId}/takeTurn
 router.post("/:gameId/takeTurn", async function (req, res) {
   // check session
-  if (req.session.user == null) {
-    res.status(404).json({ error: `No session` });
-    return;
-  }
+  // if (req.session.user == null) {
+  //   res.status(404).json({ error: `No session` });
+  //   return;
+  // }
 
   // check if column included
-  if (req.body && !req.body.moveColumn) {
+  if (req.body && req.body.moveColumn === undefined) {
     res
       .status(400)
       .json({ error: "Must include 'moveColumn' in request body as JSON" });
@@ -58,11 +58,11 @@ router.post("/:gameId/takeTurn", async function (req, res) {
   }
 
   // send off to backend
-  let validMove = businessLayer.validateMove(
+  let validMove = await business.validateMove(
     req.params.gameId,
     req.body.moveColumn
   );
-  if (!validMove.valid) {
+  if (validMove.valid && !(validMove.valid)) {
     res.status(400).json({
       error:
         "Must be a valid move. Board is 7x6 tiles and you can not move on top of other tiles. Valid column values include: 0, 1, 2, 3, 4, 5, 6",

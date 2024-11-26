@@ -29,16 +29,18 @@ async function move(gameId, column) {
 
   // get the gameboard from the db
   const game = await db.getGame(gameId);
-  console.log("game: ", game)
   if (game.length < 1) {
-    return { valid: false, error: error.gameDNE };
+    return { error: error.gameDNE };
   }
   const board = game[0].gameboard.board;
   const whoseTurn = game[0].turn;
 
+  // check user is whose turn it is
+  // TODO
+
   // drop the piece down the column
   let dropTo = ROW_NUM;
-  for (let y = ROW_NUM - 1; y >= 0; y--) {
+  for (let y = 0; y < ROW_NUM; y++) {
     if (board[y][column] != NO_PLAYER) {
       break;
     }
@@ -47,7 +49,7 @@ async function move(gameId, column) {
 
   // is column full?
   if (dropTo === ROW_NUM) {
-    return { valid: false, error: error.columnFull };
+    return { error: error.columnFull };
   }
 
   // update game in db
@@ -55,8 +57,7 @@ async function move(gameId, column) {
   let newTurn = whoseTurn === PLAYER_PINK ? PLAYER_YELLOW : PLAYER_PINK;
   await db.takeTurn(gameId, newTurn, JSON.stringify({ board: board }));
 
-  // TODO check if a winner
-  let hasWinner = checkIfWinner(
+  let hasWinner = await checkIfWinner(
     gameId,
     board,
     { x: column, y: dropTo },
@@ -88,14 +89,25 @@ async function checkIfWinner(gameId, board, lastMove, playerKey) {
 
   // Must search each direction (doesn't count the new move)
   //                           x   y
-  let count1 = checkDirection(-1, -1, board, playerKey, lastMove);
-  let count2 = checkDirection(0, -1, board, playerKey, lastMove);
-  let count3 = checkDirection(1, -1, board, playerKey, lastMove);
-  let count4 = checkDirection(-1, 0, board, playerKey, lastMove);
-  let count5 = checkDirection(1, 0, board, playerKey, lastMove);
-  let count6 = checkDirection(-1, 1, board, playerKey, lastMove);
-  let count7 = checkDirection(0, 1, board, playerKey, lastMove);
-  let count8 = checkDirection(1, 1, board, playerKey, lastMove);
+  let count1 = checkDirection(-1, -1, board, playerKey, lastMove) || [];
+  let count2 = checkDirection(0, -1, board, playerKey, lastMove) || [];
+  let count3 = checkDirection(1, -1, board, playerKey, lastMove) || [];
+  let count4 = checkDirection(-1, 0, board, playerKey, lastMove) || [];
+  let count5 = checkDirection(1, 0, board, playerKey, lastMove) || [];
+  let count6 = checkDirection(-1, 1, board, playerKey, lastMove) || [];
+  let count7 = checkDirection(0, 1, board, playerKey, lastMove) || [];
+  let count8 = checkDirection(1, 1, board, playerKey, lastMove) || [];
+
+  // TODO REMOVE
+  console.log("Last move:", lastMove);
+  console.log("Count 1:", count1);
+  console.log("Count 2:", count2);
+  console.log("Count 3:", count3);
+  console.log("Count 4:", count4);
+  console.log("Count 5:", count5);
+  console.log("Count 6:", count6);
+  console.log("Count 7:", count7);
+  console.log("Count 8:", count8);
 
   // add them up
 
@@ -103,21 +115,24 @@ async function checkIfWinner(gameId, board, lastMove, playerKey) {
 
   // up and down
   if (count2.length + count7.length + 1 >= 4) {
-    winningPieces = count2.concat(count7).push(lastMove);
+    winningPieces = count2.concat(count7)
+    winningPieces.push(lastMove)
 
     // side to side
-  } else if (count4.length + count5 + 1 >= 4) {
-    winningPieces = count4.concat(count5).push(lastMove);
+  } else if (count4.length + count5.length + 1 >= 4) {
+    winningPieces = count4.concat(count5)
+    winningPieces.push(lastMove);
 
     // positive diagonal
-  } else if (count3.length + count6 + 1 >= 4) {
-    winningPieces = count3.concat(count6).push(lastMove);
+  } else if (count3.length + count6.length + 1 >= 4) {
+    winningPieces = count3.concat(count6)
+    winningPieces.push(lastMove);
 
     // negative diagonal
-  } else if (count1.length + count8 + 1 >= 4) {
-    winningPieces = count1.concat(count8).push(lastMove);
+  } else if (count1.length + count8.length + 1 >= 4) {
+    winningPieces = count1.concat(count8);
+    winningPieces.push(lastMove)
   }
-
 
   // if no winning pieces return false
   if (!winningPieces) {
@@ -125,13 +140,18 @@ async function checkIfWinner(gameId, board, lastMove, playerKey) {
   }
 
   // mark winning pieces and set them to db
-  let winningPieceCode = playerKey == PLAYER_PINK ? PLAYER_PINK_WINNING_SPOT : PLAYER_YELLOW_WINNING_SPOT
+  let winningPieceCode =
+    playerKey == PLAYER_PINK
+      ? PLAYER_PINK_WINNING_SPOT
+      : PLAYER_YELLOW_WINNING_SPOT;
 
-  winningPieces.forEach(move => {
-    board[move.y][move.x] = winningPieceCode
+
+  winningPieces.forEach((move) => {
+    board[move.y][move.x] = winningPieceCode;
   });
 
   await db.setWinner(gameId, playerKey, JSON.stringify({ board: board }));
+
   return true;
 }
 
@@ -144,9 +164,11 @@ async function checkIfWinner(gameId, board, lastMove, playerKey) {
  * @param {x: int, y: int} move
  * @returns
  */
-function checkDirection(top, left, board, playerKey, move) {
+function checkDirection(left, top, board, playerKey, move) {
   let newX = move.x + 1 * left;
   let newY = move.y + 1 * top;
+
+//   console.log(`Check Direction, last move: x: ${move.x}, y: ${move.y} new move: x: ${newX}, y: ${newY}`)
 
   if (
     newX < 0 ||
@@ -155,16 +177,18 @@ function checkDirection(top, left, board, playerKey, move) {
     newY >= ROW_NUM ||
     board[newY][newX] !== playerKey
   ) {
+    // console.log("\tReturn Undefined")
     return undefined;
   } else {
     let result = [{ x: newX, y: newY }];
-    let next = checkDirection(top, left, board, playerKey, {
+    let next = checkDirection(left, top, board, playerKey, {
       x: newX,
       y: newY,
     });
     if (next) {
       result = result.concat(next);
     }
+    // console.log("\tAdd to result and return")
     return result;
   }
 }

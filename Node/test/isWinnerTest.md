@@ -64,7 +64,7 @@ Board after call:
 ```
 
 
-## 3. Winner Diagonal Positive
+## 4. Winner Diagonal Positive
 _Should return_ `{ valid: true, x: 5, y: 2, hasWinner: true }`
 
 Call: `POST /game/3/takeTurn` as <span style="color:yellow">Player Yellow</span> \
@@ -85,7 +85,7 @@ Board after call:
 [ 0, 1, 1, 1, 1, 1, 2]
 ```
 
-## 3. Winner Diagonal Negative
+## 5. Winner Diagonal Negative
 _Should return_ `{ valid: true, x: 3, y: 3, hasWinner: true }`
 
 Call: `POST /game/3/takeTurn` as <span style="color:pink">Player Pink</span> \
@@ -106,7 +106,7 @@ Board after call:
 [ 0, 1, 1, 1, 1, 3, 2]
 ```
 
-## 3. Double Win (Horizontal + Diagonal Negative)
+## 6. Double Win (Horizontal + Diagonal Negative)
 _Should return_ `{ valid: true, x: 6, y: 5, hasWinner: true }`
 
 Call: `POST /game/2/takeTurn` as <span style="color:yellow">Player Yellow</span> \
