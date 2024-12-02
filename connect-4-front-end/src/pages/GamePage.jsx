@@ -30,43 +30,30 @@ export default function GamePage() {
   /**
    * Set the game data from the api game result
    */
-  const getGameData = React.useCallback(
-    async () => {
-      const result = await getAPIData(`/game/${gameId}`, API_METHODS.get, {});
-      if (result.error) {
-        return;
-      }
-      let game = result.game[0]
+  const getGameData = React.useCallback(async () => {
+    const result = await getAPIData(`/game/${gameId}`, API_METHODS.get, {});
+    if (result.error) {
+      return;
+    }
+    let game = result.game[0];
 
-      // are you pink or yellow? and who is your opponent
-      if (game.playerPink === currentUser) {
-        setIsPink(true);
-        setOpponent(game.playerYellow);
-      } else if (game.playerYellow === currentUser) {
-        setIsPink(false);
-        setOpponent(game.playerPink);
-      } else {
-        // you are not a player in this game
-        navigate("/");
-      }
+    if (
+      (game.turn === PLAYER_PINK && isPink) ||
+      (game.turn === PLAYER_YELLOW && !isPink)
+    ) {
+      setIsYourTurn(true);
+    } else {
+      setIsYourTurn(false);
+    }
 
-      if (
-        (game.turn === PLAYER_PINK && isPink) ||
-        (game.turn === PLAYER_YELLOW && !isPink)
-      ) {
-        setIsYourTurn(true);
-      } else {
-        setIsYourTurn(false);
-      }
+    if (game.winner !== NO_PLAYER) {
+      setWinner(game.winner);
+    }
 
-      if (game.winner !== NO_PLAYER) {
-        setWinner(game.winner);
-      }
+    setBoard(game.gameboard.board);
 
-      setBoard(game.gameboard.board);
-    },
-    [gameId, currentUser, isPink, navigate]
-  );
+    return game;
+  }, [gameId, currentUser, isPink, navigate]);
 
   /**
    * Initial Use Effect, get session + game data
@@ -87,7 +74,19 @@ export default function GamePage() {
         return;
       }
       // get game data
-      await getGameData()
+      let game = await getGameData();
+
+      // are you pink or yellow? and who is your opponent
+      if (game.playerPink === currentUser) {
+        setIsPink(true);
+        setOpponent(game.playerYellow);
+      } else if (game.playerYellow === currentUser) {
+        setIsPink(false);
+        setOpponent(game.playerPink);
+      } else {
+        // you are not a player in this game
+        navigate("/");
+      }
       setIsLoading(false);
     }
 
@@ -116,8 +115,6 @@ export default function GamePage() {
     };
   }, []);
 
-  const delay = ms => new Promise(res => setTimeout(res, ms));
-
   // see when to reload game data
   React.useEffect(() => {
     if (!ws.current) return;
@@ -126,18 +123,23 @@ export default function GamePage() {
     ws.current.onmessage = async (e) => {
       const messageData = JSON.parse(e.data);
 
+      console.log("message", messageData);
+      console.log(
+        "has turn been taken?",
+        messageData.tookTurn &&
+          messageData.gameId &&
+          messageData.gameId === gameId
+      );
+
       // has turn been taken?
       if (
         messageData.tookTurn &&
         messageData.gameId &&
         messageData.gameId === gameId
       ) {
+        console.log("Reload Game");
         // reload game until turn is changed
-        let originalTurn = isYourTurn
-        while (originalTurn === isYourTurn) {
-          await getGameData()
-          await delay(1000)
-        }
+        getGameData();
       }
     };
   }, [ws, gameId, getGameData, isYourTurn]);
@@ -160,6 +162,7 @@ export default function GamePage() {
             isPink={isPink}
             isYourTurn={isYourTurn}
             gameId={gameId}
+            reloadGame={getGameData}
           />
           <GameStatus
             opponent={opponent}

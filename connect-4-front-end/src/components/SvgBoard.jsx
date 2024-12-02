@@ -7,6 +7,8 @@ import {
   PINK,
   PLAYER_PINK,
   YELLOW,
+  PLAYER_PINK_WINNING_SPOT,
+  PLAYER_YELLOW_WINNING_SPOT,
 } from "../utils/gameConst";
 
 export default function SvgBoard({ board }) {
@@ -22,30 +24,29 @@ export default function SvgBoard({ board }) {
                 let fill =
                   value === NO_PLAYER
                     ? BACKGROUND
-                    : value === PLAYER_PINK
+                    : value === PLAYER_PINK ||
+                      value === PLAYER_PINK_WINNING_SPOT
                     ? PINK
                     : YELLOW;
 
-                let x = 88.6 * indexX;
-                let y = 85.8 * indexY;
+                let cx = 85 * indexX + 40 + 25 + 30;
+                let cy = 80.8 * indexY + 40 + 20 + 30 + 0.5;
 
                 return (
-                  <rect
-                    key={(indexY * 10) + indexX}
-                    x={40 + x}
-                    y={35 + y}
-                    width={88.6}
-                    height={85.8}
-                    fill={fill}
-                    className="board-fillers"
-                  />
+                  <g key={`${indexX}${indexY}`}>
+                    <circle r="32" cx={cx} cy={cy} fill={fill} />
+                    {value === PLAYER_PINK_WINNING_SPOT ||
+                    value === PLAYER_YELLOW_WINNING_SPOT ? (
+                      <circle r="10" cx={cx} cy={cy} fill={BACKGROUND} />
+                    ) : (
+                      <></>
+                    )}
+                  </g>
                 );
               })}
             </>
           );
         })}
-
-        {/* <rect x={40} y={35} width={620} height={515} fill="#ff000022" /> */}
 
         <path
           fillRule="evenodd"
