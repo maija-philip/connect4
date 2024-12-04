@@ -5,19 +5,56 @@ import SvgBoard from "./SvgBoard";
 import dropBoardButton from "./../assets/media/DropBoardButton.svg";
 import DraggableBoardPiece from "./DraggableBoardPiece";
 import { CircularProgress } from "@mui/material";
+import { API_METHODS, getAPIData } from "../utils/callAPI";
 
 export default function Board({ ws, board, isPink, isYourTurn, gameId, reloadGame }) {
   const [isPieceShown, setIsPieceShown] = React.useState(isYourTurn);
   const [isLoading, setIsLoading] = React.useState(false);
   const [moveErr, setMoveErr] = React.useState("");
 
-  const forfeit = () => {
-    console.log("Drop Pieces & Forfeit");
-  };
+  const takeTurn = async (query, payload) => {
+    setIsLoading(true)
+    setMoveErr("")
+
+    // take turn game
+    let apiResult = await getAPIData(
+      `/game/${gameId}/${query}`,
+      API_METHODS.post,
+      payload
+    );
+
+    console.log("apiREsult:", apiResult)
+
+    setIsLoading(false)
+    if (apiResult.error) {
+      // display error
+      console.log("error:", apiResult.error)
+      setMoveErr(apiResult.error);
+      return;
+    }
+
+    setIsPieceShown(false);
+    reloadGame();
+
+    // send message over web socket
+    console.log("!ws.current", !ws.current)
+    if (!ws.current) return;
+    console.log("Sending")
+    ws.current.send(
+      JSON.stringify({
+        gameId: gameId,
+        tookTurn: true,
+      })
+    );
+  }
 
   React.useEffect(() => {
-    console.log("Is piece shown?", isPieceShown)
-  }, [])
+    setIsPieceShown(isYourTurn)
+  }, [isYourTurn])
+
+  React.useEffect(() => {
+    console.log("Is piece shown?", isPieceShown, ", is your turn?", isYourTurn)
+  }, [isPieceShown, isYourTurn])
 
   return (
     <div className="board">
@@ -35,7 +72,7 @@ export default function Board({ ws, board, isPink, isYourTurn, gameId, reloadGam
             id="drop-pieces-button"
             src={dropBoardButton}
             alt="Drop pieces"
-            onClick={forfeit}
+            onClick={() => {takeTurn('/forfeit', {})}}
             data-pin-no-hover="true"
           />
           {isPieceShown ? (
@@ -43,12 +80,7 @@ export default function Board({ ws, board, isPink, isYourTurn, gameId, reloadGam
               ws={ws}
               isPink={isPink}
               gameId={gameId}
-              disappear={() => {
-                setIsPieceShown(false);
-              }}
-              setIsLoading={setIsLoading}
-              setMoveErr={setMoveErr}
-              reloadGame={reloadGame}
+              takeTurn={takeTurn}
             />
           ) : (
             <></>

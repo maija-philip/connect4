@@ -66,7 +66,7 @@ async function getGameFromDB(gameId) {
   return { error: error.noError, game: result };
 }
 
-async function sendGameMessage(user, message, gameId) {
+async function sendMessageInGameChat(user, message, gameId) {
   if (message.length > 200) {
     return error.messageTooLong;
   }
@@ -136,7 +136,7 @@ async function deleteGame(username, gameId) {
 module.exports = {
   createNewGame,
   getGameFromDB,
-  sendGameMessage,
+  sendMessageInGameChat,
   getGameMessages,
   forfeit,
   deleteGame,

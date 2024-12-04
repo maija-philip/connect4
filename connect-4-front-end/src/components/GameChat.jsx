@@ -77,7 +77,7 @@ export default function GameChat({ ws, gameId, isPink }) {
         <>
           {messages.length < 1 ? <p>Start the conversation!</p> : <></>}
 
-          {[...messages].reverse().map((item, index) => {
+          {[...messages].map((item, index) => {
             const isSentByMe = item.user === currentUser;
             const messageColor =
               (isSentByMe && isPink) || (!isSentByMe && !isPink)

@@ -3,7 +3,7 @@
     Connect 4
 */
 
-const { getGameFromDB, getGameMessages, forfeit, deleteGame } = require("../game.js");
+const { getGameFromDB, getGameMessages, forfeit, deleteGame, sendMessageInGameChat } = require("../game.js");
 const { getLobbyMessages, storeMessage } = require("../chat.js");
 const {
   getUserFromUsername,
@@ -63,7 +63,7 @@ module.exports = function () {
   };
 
   this.sendGameMessage = async (username, message, gameId) => {
-    return await sendGameMessage(username, message, gameId)
+    return await sendMessageInGameChat(username, message, gameId)
   }
 
   this.getAllGameMessages = async (gameId) => {

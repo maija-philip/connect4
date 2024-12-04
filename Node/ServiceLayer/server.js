@@ -10,6 +10,7 @@ const express = require("express");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+var MemoryStore = session.MemoryStore;
 
 const { MIN_30 } = require("../constants.js");
 
@@ -30,9 +31,10 @@ app.use(cookieParser());
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
+    store: new MemoryStore(),
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: true, maxAge: MIN_30, sameSite: 'none' }, // httpOnly: true
+    cookie: { secure: true, maxAge: MIN_30, sameSite: "none" }, // httpOnly: true
   })
 );
 
@@ -57,7 +59,6 @@ app.use("/session", sessionRouter);
 const server = app.listen(8080);
 console.log("Express started on port 8080");
 
-
 /**
  * Set Up Web Server
  */
@@ -75,16 +76,20 @@ wss.on("connection", function (ws) {
 
   ws.on("message", function (message) {
     let sanitizedMessage = sanitizer.sanitize(message);
-    let parsedMessage = JSON.parse(sanitizedMessage)
-    
+    let parsedMessage = JSON.parse(sanitizedMessage);
+
     // if the parsed message has a message component, store the message
     if (parsedMessage.message) {
-      business.sendMessage(parsedMessage.user, parsedMessage.message)
+      business.sendMessage(parsedMessage.user, parsedMessage.message);
     }
 
     // if the parsed message has a message component, store the message
     if (parsedMessage.gameMessage) {
-      business.sendGameMessage(parsedMessage.user, parsedMessage.gameMessage, parsedMessage.gameId)
+      business.sendGameMessage(
+        parsedMessage.user,
+        parsedMessage.gameMessage,
+        parsedMessage.gameId
+      );
     }
 
     wss.broadcast(message);
@@ -93,6 +98,6 @@ wss.on("connection", function (ws) {
 
 wss.broadcast = function broadcast(msg) {
   wss.clients.forEach(function each(client) {
-      client.send(msg.toString());
-   });
+    client.send(msg.toString());
+  });
 };

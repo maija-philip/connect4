@@ -52,8 +52,11 @@ export default function GamePage() {
 
     setBoard(game.gameboard.board);
 
+    console.log("Game Data: ", game)
+    console.log("Who am I? ", currentUser)
+
     return game;
-  }, [gameId, currentUser, isPink, navigate]);
+  }, [gameId, currentUser, isPink]);
 
   /**
    * Initial Use Effect, get session + game data

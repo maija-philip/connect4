@@ -105,4 +105,23 @@ router.post("/:gameId/forfeit", async function (req, res) {
   res.status(200).json({"message": "Your opponent has won"});
 });
 
+router.post("/:gameId/deleteGame", async function (req, res) {
+  // check session
+  if (req.session.user == null) {
+    res.status(404).json({ error: `No session` });
+    return;
+  }
+
+  // send off to backend
+  let result = await business.deleteGameWithId(req.session.user, req.params.gameId)
+
+  // if error
+   if (result.error !== error.noError) {
+    res.status(400).json(result.error);
+    return;
+  }
+
+  res.status(200).json({"message": "Your opponent has won"});
+})
+
 module.exports = router;

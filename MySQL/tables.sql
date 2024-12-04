@@ -33,7 +33,7 @@ CREATE TABLE `connect_4_current_games` (
 DROP TABLE IF EXISTS `connect_4_game_message`;
 CREATE TABLE `connect_4_game_message` (
   `messageId` int NOT NULL AUTO_INCREMENT,
-  `timestamp` datetime NOT NULL,
+  `timestamp` DATETIME DEFAULT CURRENT_TIMESTAMP,
   `gameId` int NOT NULL,
   `user` varchar(60) COLLATE utf8_unicode_ci NOT NULL,
   `message` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
