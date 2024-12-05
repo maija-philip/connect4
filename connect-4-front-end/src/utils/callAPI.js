@@ -22,7 +22,7 @@ export async function getAPIData(endpoint, method, payload) {
   }
 
   let link = `${connect4server}${endpoint}`;
-  // console.log(link)
+  // console.log("LINK", link)
 
   return fetch(link, details)
     .then((res) => res.json())

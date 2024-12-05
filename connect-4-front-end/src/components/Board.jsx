@@ -6,6 +6,7 @@ import dropBoardButton from "./../assets/media/DropBoardButton.svg";
 import DraggableBoardPiece from "./DraggableBoardPiece";
 import { CircularProgress } from "@mui/material";
 import { API_METHODS, getAPIData } from "../utils/callAPI";
+import { dropPieces } from "../utils/dropPieces";
 
 export default function Board({ ws, board, isPink, isYourTurn, gameId, reloadGame }) {
   const [isPieceShown, setIsPieceShown] = React.useState(isYourTurn);
@@ -23,29 +24,20 @@ export default function Board({ ws, board, isPink, isYourTurn, gameId, reloadGam
       payload
     );
 
-    console.log("apiREsult:", apiResult)
-
     setIsLoading(false)
     if (apiResult.error) {
       // display error
-      console.log("error:", apiResult.error)
       setMoveErr(apiResult.error);
       return;
     }
 
     setIsPieceShown(false);
     reloadGame();
+  }
 
-    // send message over web socket
-    console.log("!ws.current", !ws.current)
-    if (!ws.current) return;
-    console.log("Sending")
-    ws.current.send(
-      JSON.stringify({
-        gameId: gameId,
-        tookTurn: true,
-      })
-    );
+  const forfeit = async () => {
+    // await takeTurn('forfeit', {})
+    dropPieces()
   }
 
   React.useEffect(() => {
@@ -66,13 +58,11 @@ export default function Board({ ws, board, isPink, isYourTurn, gameId, reloadGam
         <>
           {moveErr !== "" ? <p className="red">{moveErr}</p> : <></>}
           <SvgBoard board={board} />
-          <br />
-          <br />
           <img
             id="drop-pieces-button"
             src={dropBoardButton}
             alt="Drop pieces"
-            onClick={() => {takeTurn('/forfeit', {})}}
+            onClick={forfeit}
             data-pin-no-hover="true"
           />
           {isPieceShown ? (

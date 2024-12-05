@@ -34,7 +34,7 @@ export default function SelectOpponentDialog({ sendRequest }) {
 
     const username = document.getElementById("opponent-select").value;
 
-    console.log("Picked person: ", username);
+    // console.log("Picked person: ", username);
     sendRequest(username);
     handleClose();
   };

@@ -10,7 +10,7 @@ const express = require("express");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-var MemoryStore = session.MemoryStore;
+// var MemoryStore = session.MemoryStore;
 
 const { MIN_30 } = require("../constants.js");
 
@@ -26,12 +26,11 @@ app.use(
   })
 );
 app.enable("trust proxy");
-
 app.use(cookieParser());
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
-    store: new MemoryStore(),
     resave: false,
     saveUninitialized: true,
     cookie: { secure: true, maxAge: MIN_30, sameSite: "none" }, // httpOnly: true

@@ -2,12 +2,16 @@ import * as React from "react";
 import "../assets/css/constants.css";
 import "../assets/css/styles.css";
 import { PLAYER_PINK, PLAYER_YELLOW } from "../utils/gameConst";
+import { useNavigate } from "react-router-dom";
+import { API_METHODS, getAPIData } from "../utils/callAPI";
 
-export default function GameStatus({ opponent, isPink, isYourTurn, winner }) {
+
+export default function GameStatus({ opponent, isPink, isYourTurn, winner, gameId }) {
   const [title, setTitle] = React.useState("error");
   const [desc, setDesc] = React.useState("");
   const [titleColor, setTitleColor] = React.useState("pink");
   const [shouldHaveLeaveButton, setShouldHaveLeaveButton] = React.useState(false);
+  const navigate = useNavigate();
 
   React.useEffect(() => {
 
@@ -41,12 +45,17 @@ export default function GameStatus({ opponent, isPink, isYourTurn, winner }) {
     setShouldHaveLeaveButton(false)
   }, [isPink, isYourTurn, opponent, winner]);
 
+  const leaveGame = () => {
+    getAPIData(`/game/${gameId}/deleteGame`, API_METHODS.post, {})
+    navigate("/login");
+  }
+
   return (
     <div>
       <h1 className={titleColor}>{title}</h1>
       <p>{desc}</p>
       {
-        shouldHaveLeaveButton ? <button>Leave Game</button> : <></>
+        shouldHaveLeaveButton ? <button onClick={leaveGame}>Leave Game</button> : <></>
       }
     </div>
   );

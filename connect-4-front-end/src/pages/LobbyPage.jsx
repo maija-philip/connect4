@@ -75,7 +75,7 @@ export default function LobbyPage() {
 
   const countdownFinished = () => {
     setIsCountdownInProgress(false);
-    console.log("Countdown finished");
+    // console.log("Countdown finished");
     // send message that request expired
     ws.current.send(
       JSON.stringify({
@@ -99,7 +99,7 @@ export default function LobbyPage() {
   };
 
   const acceptGameRequest = async () => {
-    console.log("accept request");
+    // console.log("accept request");
     setIsPageLoading(true);
     let result = await getAPIData(
       "/lobby/acceptGameRequest",
@@ -128,7 +128,7 @@ export default function LobbyPage() {
   };
 
   const declineGameRequest = useCallback(() => {
-    console.log("decline request");
+    // console.log("decline request");
     ws.current.send(
       JSON.stringify({
         declined: "Request Declined",
@@ -182,7 +182,7 @@ export default function LobbyPage() {
       // is game request?
       if (messageData.request && messageData.request === currentUser) {
         // check if they already sent one (auto decline if they are waiting on one)
-        console.log("Got a game request from: ", messageData.sender);
+        // console.log("Got a game request from: ", messageData.sender);
 
         if (isCountdownInProgress) {
           // reject game request

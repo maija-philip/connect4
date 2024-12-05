@@ -40,7 +40,7 @@ export const checkDropPosition = (event) => {
       clientY > newBoardTop &&
       clientY < newBoardHeight + newBoardTop;
 
-    console.log("Is in board: ", isInsideBoard);
+    // console.log("Is in board: ", isInsideBoard);
 
     if (!isInsideBoard) {
         // mouse isn't inside of the board

@@ -1,6 +1,7 @@
 import * as React from "react";
 import "../assets/css/constants.css";
 import "../assets/css/styles.css";
+// import "../assets/css/board-pieces-animation.css";
 import {
   BACKGROUND,
   NO_PLAYER,
@@ -10,11 +11,33 @@ import {
   PLAYER_PINK_WINNING_SPOT,
   PLAYER_YELLOW_WINNING_SPOT,
 } from "../utils/gameConst";
+import { dropIntoPlace } from "../utils/dropPieces";
 
 export default function SvgBoard({ board }) {
+  const [hasRun, setHasRun] = React.useState(false);
+
+  React.useEffect(() => {
+    if (hasRun) return
+
+    const didWork = dropIntoPlace();
+    setHasRun(true);
+
+    if (!didWork) {
+      setHasRun(false);
+      setTimeout(dropIntoPlace(), 1000);
+    }
+  }, [hasRun]);
+
   return (
     <div className="svg-board-container">
-      <svg viewBox="0 0 700 585" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg
+        viewBox="0 0 700 620"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        id="svg-box"
+      >
+        {" "}
+        {/* 585 */}
         {board?.map((row, indexY) => {
           // 6 rows
           // 7 columns
@@ -33,7 +56,7 @@ export default function SvgBoard({ board }) {
                 let cy = 80.8 * indexY + 40 + 20 + 30 + 0.5;
 
                 return (
-                  <g key={`${indexX}${indexY}`}>
+                  <g key={`${indexX}${indexY}`} className="board-piece">
                     <circle r="32" cx={cx} cy={cy} fill={fill} />
                     {value === PLAYER_PINK_WINNING_SPOT ||
                     value === PLAYER_YELLOW_WINNING_SPOT ? (
@@ -47,7 +70,6 @@ export default function SvgBoard({ board }) {
             </>
           );
         })}
-
         <path
           fillRule="evenodd"
           clipRule="evenodd"

@@ -52,11 +52,10 @@ export default function GamePage() {
 
     setBoard(game.gameboard.board);
 
-    console.log("Game Data: ", game)
-    console.log("Who am I? ", currentUser)
+    // console.log("Game Data: ", game);
 
     return game;
-  }, [gameId, currentUser, isPink]);
+  }, [gameId, isPink]);
 
   /**
    * Initial Use Effect, get session + game data
@@ -118,34 +117,13 @@ export default function GamePage() {
     };
   }, []);
 
-  // see when to reload game data
-  React.useEffect(() => {
-    if (!ws.current) return;
-
-    // getting message
-    ws.current.onmessage = async (e) => {
-      const messageData = JSON.parse(e.data);
-
-      console.log("message", messageData);
-      console.log(
-        "has turn been taken?",
-        messageData.tookTurn &&
-          messageData.gameId &&
-          messageData.gameId === gameId
-      );
-
-      // has turn been taken?
-      if (
-        messageData.tookTurn &&
-        messageData.gameId &&
-        messageData.gameId === gameId
-      ) {
-        console.log("Reload Game");
-        // reload game until turn is changed
-        getGameData();
-      }
-    };
-  }, [ws, gameId, getGameData, isYourTurn]);
+  // React.useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     console.log('call api')
+  //     getGameData()
+  //   }, 5000); // do this every 5s
+  //   return () => clearTimeout(timer);
+  // });
 
   return (
     <div className="gameWrap">
@@ -172,6 +150,7 @@ export default function GamePage() {
             isPink={isPink}
             isYourTurn={isYourTurn}
             winner={winner}
+            gameId={gameId}
           />
           <br />
           <br />

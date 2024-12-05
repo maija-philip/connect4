@@ -13,7 +13,7 @@ export default function DraggableBoardPiece({ ws, isPink, gameId, takeTurn }) {
     if (!result.isValid) {
       return;
     }
-    takeTurn('/takeTurn', { moveColumn: result.column })
+    takeTurn('takeTurn', { moveColumn: result.column })
   };
 
   return (

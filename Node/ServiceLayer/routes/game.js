@@ -98,7 +98,7 @@ router.post("/:gameId/forfeit", async function (req, res) {
 
   // if error
    if (result.error !== error.noError) {
-    res.status(400).json(result.error);
+    res.status(400).json(result);
     return;
   }
 
@@ -121,7 +121,7 @@ router.post("/:gameId/deleteGame", async function (req, res) {
     return;
   }
 
-  res.status(200).json({"message": "Your opponent has won"});
+  res.status(200).json({"message": "Game has been deleted"});
 })
 
 module.exports = router;
