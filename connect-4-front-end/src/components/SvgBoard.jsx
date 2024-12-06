@@ -1,7 +1,6 @@
 import * as React from "react";
 import "../assets/css/constants.css";
 import "../assets/css/styles.css";
-// import "../assets/css/board-pieces-animation.css";
 import {
   BACKGROUND,
   NO_PLAYER,

@@ -16,6 +16,7 @@ export default function GamePage() {
   const { gameId } = useParams();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = React.useState(false);
+  const [apiCallCount, setApiCallCount] = React.useState(0);
 
   /**
    * Game State Variables
@@ -27,14 +28,21 @@ export default function GamePage() {
   const [isYourTurn, setIsYourTurn] = React.useState(false);
   const [winner, setWinner] = React.useState(undefined);
 
+
+  const increaseAPICallCount = React.useCallback(() => {
+    setApiCallCount(apiCallCount + 1)
+  }, [apiCallCount])
+
   /**
    * Set the game data from the api game result
    */
   const getGameData = React.useCallback(async () => {
     const result = await getAPIData(`/game/${gameId}`, API_METHODS.get, {});
     if (result.error) {
-      return;
+      navigate("/");
     }
+
+    increaseAPICallCount()
     let game = result.game[0];
 
     if (
@@ -55,7 +63,7 @@ export default function GamePage() {
     // console.log("Game Data: ", game);
 
     return game;
-  }, [gameId, isPink]);
+  }, [navigate, gameId, isPink, increaseAPICallCount]);
 
   /**
    * Initial Use Effect, get session + game data
@@ -101,8 +109,8 @@ export default function GamePage() {
 
   // web socket variables
   const ws = React.useRef(null);
-  //const socketUrl = "ws://localhost:8080";
-  const socketUrl = "ws://connect4service-281256585027.us-central1.run.app";
+  //const socketUrl = "wss://localhost:8080";
+  const socketUrl = "wss://connect4service-281256585027.us-central1.run.app";
 
   // start websocket
   React.useEffect(() => {
@@ -117,13 +125,29 @@ export default function GamePage() {
     };
   }, []);
 
-  // React.useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     console.log('call api')
-  //     getGameData()
-  //   }, 5000); // do this every 5s
-  //   return () => clearTimeout(timer);
-  // });
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      console.log("call api");
+      getGameData();
+    }, 5000); // do this every 5s
+    return () => clearTimeout(timer);
+  });
+
+  /**
+   * Time out after certain number of requests
+   */
+  const endGame = React.useCallback(() => {
+    getAPIData(`/game/${gameId}/forfeit`, API_METHODS.post, {}).then(() => {
+      getAPIData(`/game/${gameId}/deleteGame`, API_METHODS.post, {});
+    });
+    navigate("/");
+  }, [gameId, navigate]);
+
+  React.useEffect(() => {
+    if (apiCallCount > 200) {
+      endGame()
+    }
+  })
 
   return (
     <div className="gameWrap">

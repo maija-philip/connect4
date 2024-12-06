@@ -33,7 +33,7 @@ router.post("/logout", async function (req, res) {
   const error = business.logout(req.session.user)
   if (error != error.noError) {
     res.status(500).json({ error: error });
-
+    return
   }
 
   req.session.destroy();

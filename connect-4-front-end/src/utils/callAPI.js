@@ -14,7 +14,7 @@ export async function getAPIData(endpoint, method, payload) {
     credentials: 'include',
     headers: {
       Accept: "application/json",
-      "Content-Type": 'application/json'
+      "Content-Type": 'application/json',
     },
   };
   if (method !== API_METHODS.get) {

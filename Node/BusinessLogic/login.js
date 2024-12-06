@@ -57,15 +57,19 @@ async function login(username, password) {
 
 // create new user + hash their password
 async function setUpNewUser(ip, browser, token, username, password) {
-  if (username.length > 60 || username.length < 4 || password.length > 60 || password.length < 4 || token.length > 100 || token.length < 4) {
+  if (username.length > 60 || username.length < 4 || password.length > 60 || password.length < 4 || token.length > 200 || token.length < 4) {
+    console.log("something is too short:")
+    console.log("username", username)
+    console.log("password", password)
+    console.log("token", token)
     return error.invalidNewUserInformation;
   }
 
   // does the token exist?
   let result = await db.doesTokenExist(token);
   let isTokenValid = tokenMachine.validateToken(ip, browser, token);
-
   db.deleteToken(token);
+  
   if (result.length < 1 || !isTokenValid) {
     return error.invalidToken;
   }
@@ -74,6 +78,7 @@ async function setUpNewUser(ip, browser, token, username, password) {
   result = await db.getUser(username);
 
   if (result.length > 0) {
+    console.log("user exists already")
     return error.invalidNewUserInformation;
   }
 
@@ -90,7 +95,8 @@ async function setUpNewUser(ip, browser, token, username, password) {
 async function requestNewUserToken(ip, browser) {
   let token = tokenMachine.createToken(ip, browser);
 
-  let result = db.saveToken(token);
+  let result = await db.saveToken(token);
+  console.log("get and save token", result)
   if (result.affectedRows < 1) {
     return {error: error.somethingWentWrong}
   }
@@ -102,11 +108,7 @@ async function requestNewUserToken(ip, browser) {
 // create new user + hash their password
 async function logoutUser(username) {
   
-  let result = db.changeInLobbyStatus(false, username);
-  if (result.affectedRows < 1) {
-    return error.somethingWentWrong
-  }
-
+  await db.changeInLobbyStatus(false, username);
   return error.noError ;
 }
 

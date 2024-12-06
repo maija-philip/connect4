@@ -18,8 +18,8 @@ export default function LobbyPage() {
    * Web Sockets Variables
    */
   const ws = React.useRef(null);
-  //const socketUrl = "ws://localhost:8080";
-  const socketUrl = "ws://connect4service-281256585027.us-central1.run.app";
+  //const socketUrl = "wss://localhost:8080";
+  const socketUrl = "wss://connect4service-281256585027.us-central1.run.app";
   const [readyForWS, setReadyForWS] = React.useState(false);
 
   /**

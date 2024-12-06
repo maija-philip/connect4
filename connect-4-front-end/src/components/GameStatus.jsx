@@ -47,7 +47,7 @@ export default function GameStatus({ opponent, isPink, isYourTurn, winner, gameI
 
   const leaveGame = () => {
     getAPIData(`/game/${gameId}/deleteGame`, API_METHODS.post, {})
-    navigate("/login");
+    navigate("/");
   }
 
   return (

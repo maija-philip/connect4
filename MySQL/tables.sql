@@ -63,7 +63,7 @@ CREATE TABLE `connect_4_user` (
 
 DROP TABLE IF EXISTS `connect_4_registration_tokens`;
 CREATE TABLE `connect_4_registration_tokens` (
-  `token` varchar(100) NOT NULL,
+  `token` varchar(200) NOT NULL,
   PRIMARY KEY (`token`)
 );
 

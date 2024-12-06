@@ -36,7 +36,7 @@ export default function Board({ ws, board, isPink, isYourTurn, gameId, reloadGam
   }
 
   const forfeit = async () => {
-    // await takeTurn('forfeit', {})
+    await takeTurn('forfeit', {})
     dropPieces()
   }
 

@@ -20,7 +20,7 @@ async function storeMessage(username, message) {
     return error.messageTooLong
   }
 
-  const result = db.sendLobbyMessage(username, message)
+  const result = await db.sendLobbyMessage(username, message)
   if (result.length < 1) {
     return error.somethingWentWrong
   }
