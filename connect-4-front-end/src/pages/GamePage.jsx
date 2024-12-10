@@ -28,21 +28,20 @@ export default function GamePage() {
   const [isYourTurn, setIsYourTurn] = React.useState(false);
   const [winner, setWinner] = React.useState(undefined);
 
-
   const increaseAPICallCount = React.useCallback(() => {
-    setApiCallCount(apiCallCount + 1)
-  }, [apiCallCount])
+    setApiCallCount(apiCallCount + 1);
+  }, [apiCallCount]);
 
   /**
    * Set the game data from the api game result
    */
   const getGameData = React.useCallback(async () => {
     const result = await getAPIData(`/game/${gameId}`, API_METHODS.get, {});
-    if (result.error) {
+    if (!result || result.error) {
       navigate("/");
     }
 
-    increaseAPICallCount()
+    // increaseAPICallCount();
     let game = result.game[0];
 
     if (
@@ -63,7 +62,7 @@ export default function GamePage() {
     // console.log("Game Data: ", game);
 
     return game;
-  }, [navigate, gameId, isPink, increaseAPICallCount]);
+  }, [navigate, gameId, isPink]);
 
   /**
    * Initial Use Effect, get session + game data
@@ -125,29 +124,105 @@ export default function GamePage() {
     };
   }, []);
 
-  React.useEffect(() => {
-    const timer = setTimeout(() => {
-      console.log("call api");
-      getGameData();
-    }, 5000); // do this every 5s
-    return () => clearTimeout(timer);
-  });
-
   /**
    * Time out after certain number of requests
    */
   const endGame = React.useCallback(() => {
     getAPIData(`/game/${gameId}/forfeit`, API_METHODS.post, {}).then(() => {
-      getAPIData(`/game/${gameId}/deleteGame`, API_METHODS.post, {});
+      getAPIData(`/game/${gameId}/deleteGame`, API_METHODS.post, {}).then(
+        () => {
+          getAPIData("/logout", API_METHODS.post, {});
+        }
+      );
     });
     navigate("/");
   }, [gameId, navigate]);
 
+  // function delay(ms) {
+  //   return new Promise((resolve) => setTimeout(resolve, ms));
+  // }
+
+  // React.useEffect(() => {
+  //   // const timer = setTimeout(async () => {
+  //   //   console.log("call api");
+  //   //   await getGameData();
+  //   // }, 5000); // do this every 5s
+  //   // return () => clearTimeout(timer);
+
+  //   async function reloadGame() {
+  //     while (apiCallCount < 200) {
+  //       await getGameData() // increases apiCallCount
+  //       await delay(5000)
+  //     }
+  //     endGame()
+  //   }
+  //   reloadGame()
+  // });
+
+  // React.useEffect(() => {
+  //  const timer = setTimeout(async () => {
+  //     console.log("call api");
+  //     await getGameData();
+  //   }, 5000); // do this every 5s
+  //   return () => clearTimeout(timer);
+
+  // }, [isLoading, getGameData]);
+
+  // async function runthis() {
+  //   while (apiCallCount < 200) {
+  //     console.log("Get Game")
+  //     await getGameData() // increases apiCallCount
+  //     await delay(5000)
+  //   }
+  //   endGame()
+  // }
+
+  // runthis();
+
   React.useEffect(() => {
     if (apiCallCount > 200) {
-      endGame()
+      endGame();
     }
+  }, [apiCallCount, endGame]);
+
+  React.useEffect(() => {
+    function reloadGameOverAndOver() {
+      getAPIData(`/game/${gameId}`, API_METHODS.get, {}).then((result) => {
+        if (result.error) {
+          navigate("/");
+        }
+  
+        console.log("called api, count", apiCallCount);
+        increaseAPICallCount();
+        let game = result.game[0];
+  
+        if (
+          (game.turn === PLAYER_PINK && isPink) ||
+          (game.turn === PLAYER_YELLOW && !isPink)
+        ) {
+          setIsYourTurn(true);
+        } else {
+          setIsYourTurn(false);
+        }
+  
+        if (game.winner !== NO_PLAYER) {
+          setWinner(game.winner);
+        }
+  
+        setBoard(game.gameboard.board);
+  
+        // call the next one
+        if (apiCallCount < 200) {
+          timeout = setTimeout(reloadGameOverAndOver, 5000);
+        }
+      });
+    }
+  
+    let timeout = setTimeout(reloadGameOverAndOver, 5000);
+
+    return (() => {clearTimeout(timeout)})
   })
+  
 
   return (
     <div className="gameWrap">

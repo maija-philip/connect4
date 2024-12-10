@@ -12,7 +12,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 // var MemoryStore = session.MemoryStore;
 
-const { MIN_30 } = require("../constants.js");
+const { MIN_30, HOUR_1 } = require("../constants.js");
 
 const app = express();
 app.use(express.static("public"));
@@ -33,7 +33,8 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: true, maxAge: MIN_30, sameSite: "none" }, // httpOnly: true
+    rolling: true,
+    cookie: { secure: true, maxAge: HOUR_1, sameSite: "none" }, // httpOnly: true
   })
 );
 
@@ -55,8 +56,8 @@ app.use("/lobby", lobbyRouter);
 app.use("/game", gameRouter);
 app.use("/session", sessionRouter);
 
-const server = app.listen(8080);
-console.log("Express started on port 8080");
+const server = app.listen(443);
+console.log("Express started on port 443");
 
 /**
  * Set Up Web Server
@@ -71,7 +72,6 @@ var WebSocketServer = require("ws").Server;
 var wss = new WebSocketServer({ server: server });
 
 wss.on("connection", function (ws) {
-  // wss.broadcast("Connection!");
 
   ws.on("message", function (message) {
     let sanitizedMessage = sanitizer.sanitize(message);
@@ -89,6 +89,10 @@ wss.on("connection", function (ws) {
         parsedMessage.gameMessage,
         parsedMessage.gameId
       );
+    }
+
+    if (parsedMessage.connection) {
+      business.putPlayerInLobby(parsedMessage.user)
     }
 
     wss.broadcast(message);

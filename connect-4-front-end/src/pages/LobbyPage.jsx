@@ -12,13 +12,14 @@ import { CircularProgress } from "@mui/material";
 import GameRequestCountdown from "../components/GameRequestCountdown";
 import SelectOpponentDialog from "../components/SelectOpponentDialog";
 import GameRequestDialog from "../components/GameRequestDialog";
+import PlayerConnectedToast from "../components/PlayerConnectedToast";
 
 export default function LobbyPage() {
   /**
    * Web Sockets Variables
    */
   const ws = React.useRef(null);
-  //const socketUrl = "wss://localhost:8080";
+  // const socketUrl = "ws://localhost:443";
   const socketUrl = "wss://connect4service-281256585027.us-central1.run.app";
   const [readyForWS, setReadyForWS] = React.useState(false);
 
@@ -59,7 +60,9 @@ export default function LobbyPage() {
 
       // GET LOBBY MESSAGES
       result = await getAPIData("/lobby", API_METHODS.get, {});
-      setMessages(result.messages);
+      if (!result.error) {
+        setMessages(result.messages);
+      }
       setIsChatLoading(false);
 
       // START WEB SOCKET
@@ -109,7 +112,7 @@ export default function LobbyPage() {
         receiver: currentUser,
       }
     );
-    
+
     setIsPageLoading(false);
     if (result.error) {
       // decline if there's an error
@@ -147,8 +150,17 @@ export default function LobbyPage() {
     if (readyForWS) {
       console.log("Starting web socket");
       ws.current = new WebSocket(socketUrl);
-      // ws.current.onopen = () => console.log("ws opened");
-      // ws.current.onclose = () => console.log("ws closed");
+      ws.current.onopen = () => {
+        ws.current.send(
+          JSON.stringify({
+            user: currentUser,
+            connection: true,
+          })
+        );
+      };
+      ws.current.onclose = () => {
+        getAPIData('/logout', API_METHODS.post, {})
+      };
 
       const wsCurrent = ws.current;
 
@@ -156,7 +168,7 @@ export default function LobbyPage() {
         wsCurrent.close();
       };
     }
-  }, [readyForWS]);
+  }, [readyForWS, currentUser]);
 
   // display messages ws sent
   React.useEffect(() => {
@@ -241,7 +253,9 @@ export default function LobbyPage() {
       ) : (
         <>
           <Logout />
+          <PlayerConnectedToast ws={ws} />
           <div
+            id="spinny-lobby-logo"
             className="logo"
             aria-label="connect 4 graphical interpretation with 2 by 2 purple board alternating pink and purple tiles"
           ></div>

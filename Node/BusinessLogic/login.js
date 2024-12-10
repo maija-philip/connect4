@@ -47,11 +47,6 @@ async function login(username, password) {
     return error.invalidLogin;
   }
 
-  result = await db.changeInLobbyStatus(true, username);
-  if (result.length == 0 ){
-    return error.somethingWentWrong
-  }
-
   return error.noError;
 }
 
@@ -83,7 +78,7 @@ async function setUpNewUser(ip, browser, token, username, password) {
   }
 
   const hashedPassword = await bcrypt.hash(password, 10); // 10 rounds of salt
-  result = await db.createUser(username, hashedPassword, true);
+  result = await db.createUser(username, hashedPassword, false);
   if (result.affectedRows < 1) {
     return error.somethingWentWrong;
   }
@@ -105,13 +100,19 @@ async function requestNewUserToken(ip, browser) {
 }
 
 
-// create new user + hash their password
 async function logoutUser(username) {
   
   await db.changeInLobbyStatus(false, username);
   return error.noError ;
 }
 
+async function addPlayerToLobby(username) {
+  let result = await db.changeInLobbyStatus(true, username);
+  if (result.length == 0 ){
+    return error.somethingWentWrong
+  }
+  return error.noError 
+}
 
 module.exports = {
   getUserFromUsername,
@@ -119,5 +120,6 @@ module.exports = {
   login,
   setUpNewUser,
   requestNewUserToken,
-  logoutUser
+  logoutUser,
+  addPlayerToLobby
 };

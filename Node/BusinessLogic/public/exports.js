@@ -12,6 +12,7 @@ const {
   requestNewUserToken,
   logoutUser,
   getUsersInLobby,
+  addPlayerToLobby,
 } = require("../login.js");
 const { acceptGameRequest } = require("../lobby.js");
 const { move } = require("../moves.js");
@@ -52,6 +53,9 @@ module.exports = function () {
   this.acceptGameRequest = async (sender, receiver) => {
     return await acceptGameRequest(sender, receiver)
   };
+  this.putPlayerInLobby = async (username) => {
+    return await addPlayerToLobby(username)
+  }
 
   // Game
   this.validateMove = (username, gameId, column) => {
