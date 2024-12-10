@@ -27,8 +27,6 @@ router.get("/:gameId", async function (req, res) {
   res.status(200).json({ game: result.game });
 });
 
-// TODO
-// - change this one to get game messages
 
 // POST /game/{gameId}/getMessages
 router.get("/:gameId/getMessages", async function (req, res) {
@@ -117,7 +115,7 @@ router.post("/:gameId/deleteGame", async function (req, res) {
   let result = await business.deleteGameWithId(req.session.user, req.params.gameId)
 
   // if error
-   if (result.error !== error.noError) {
+   if (result.error && result.error !== error.noError) {
     res.status(400).json(result.error);
     return;
   }

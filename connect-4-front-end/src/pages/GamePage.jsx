@@ -43,6 +43,7 @@ export default function GamePage() {
 
     // increaseAPICallCount();
     let game = result.game[0];
+    console.log(game);
 
     if (
       (game.turn === PLAYER_PINK && isPink) ||
@@ -62,7 +63,7 @@ export default function GamePage() {
     // console.log("Game Data: ", game);
 
     return game;
-  }, [navigate, gameId, isPink]);
+  },[gameId, isPink, navigate]);
 
   /**
    * Initial Use Effect, get session + game data
@@ -138,91 +139,54 @@ export default function GamePage() {
     navigate("/");
   }, [gameId, navigate]);
 
-  // function delay(ms) {
-  //   return new Promise((resolve) => setTimeout(resolve, ms));
-  // }
+  // React.useEffect(() => {
+  //   if (apiCallCount > 200) {
+  //     endGame();
+  //   }
+  // }, [apiCallCount, endGame]);
 
   // React.useEffect(() => {
-  //   // const timer = setTimeout(async () => {
-  //   //   console.log("call api");
-  //   //   await getGameData();
-  //   // }, 5000); // do this every 5s
-  //   // return () => clearTimeout(timer);
+  //   function reloadGameOverAndOver() {
+  //     getAPIData(`/game/${gameId}`, API_METHODS.get, {}).then((result) => {
+  //       if (result.error) {
+  //         navigate("/");
+  //       }
 
-  //   async function reloadGame() {
-  //     while (apiCallCount < 200) {
-  //       await getGameData() // increases apiCallCount
-  //       await delay(5000)
-  //     }
-  //     endGame()
+  //       console.log("called api, count", apiCallCount);
+  //       increaseAPICallCount();
+  //       let game = result.game[0];
+
+  //       if (
+  //         (game.turn === PLAYER_PINK && isPink) ||
+  //         (game.turn === PLAYER_YELLOW && !isPink)
+  //       ) {
+  //         setIsYourTurn(true);
+  //       } else {
+  //         setIsYourTurn(false);
+  //       }
+
+  //       if (game.winner !== NO_PLAYER) {
+  //         setWinner(game.winner);
+  //       }
+
+  //       setBoard(game.gameboard.board);
+
+  //       // call the next one
+  //       if (apiCallCount < 200) {
+  //         timeout = setTimeout(reloadGameOverAndOver, 5000);
+  //       }
+  //     });
   //   }
-  //   reloadGame()
-  // });
 
-  // React.useEffect(() => {
-  //  const timer = setTimeout(async () => {
-  //     console.log("call api");
-  //     await getGameData();
-  //   }, 5000); // do this every 5s
-  //   return () => clearTimeout(timer);
+  //   let timeout = setTimeout(reloadGameOverAndOver, 5000);
 
-  // }, [isLoading, getGameData]);
-
-  // async function runthis() {
-  //   while (apiCallCount < 200) {
-  //     console.log("Get Game")
-  //     await getGameData() // increases apiCallCount
-  //     await delay(5000)
-  //   }
-  //   endGame()
-  // }
-
-  // runthis();
+  //   return (() => {clearTimeout(timeout)})
+  // })
 
   React.useEffect(() => {
-    if (apiCallCount > 200) {
-      endGame();
-    }
-  }, [apiCallCount, endGame]);
-
-  React.useEffect(() => {
-    function reloadGameOverAndOver() {
-      getAPIData(`/game/${gameId}`, API_METHODS.get, {}).then((result) => {
-        if (result.error) {
-          navigate("/");
-        }
-  
-        console.log("called api, count", apiCallCount);
-        increaseAPICallCount();
-        let game = result.game[0];
-  
-        if (
-          (game.turn === PLAYER_PINK && isPink) ||
-          (game.turn === PLAYER_YELLOW && !isPink)
-        ) {
-          setIsYourTurn(true);
-        } else {
-          setIsYourTurn(false);
-        }
-  
-        if (game.winner !== NO_PLAYER) {
-          setWinner(game.winner);
-        }
-  
-        setBoard(game.gameboard.board);
-  
-        // call the next one
-        if (apiCallCount < 200) {
-          timeout = setTimeout(reloadGameOverAndOver, 5000);
-        }
-      });
-    }
-  
-    let timeout = setTimeout(reloadGameOverAndOver, 5000);
-
-    return (() => {clearTimeout(timeout)})
-  })
-  
+    console.log("here board", board);
+    console.log("is board?", board ? "true" : "false");
+  }, [board]);
 
   return (
     <div className="gameWrap">
@@ -236,14 +200,18 @@ export default function GamePage() {
             <span className={isPink ? "pink" : "yellow"}>{currentUser}</span> vs{" "}
             <span className={isPink ? "yellow" : "pink"}>{opponent}</span>
           </h1>
-          <Board
-            ws={ws}
-            board={board}
-            isPink={isPink}
-            isYourTurn={isYourTurn}
-            gameId={gameId}
-            reloadGame={getGameData}
-          />
+          {board ? (
+            <Board
+              ws={ws}
+              board={board}
+              isPink={isPink}
+              isYourTurn={isYourTurn}
+              gameId={gameId}
+              reloadGame={getGameData}
+            />
+          ) : (
+            <p>No board to display</p>
+          )}
           <GameStatus
             opponent={opponent}
             isPink={isPink}

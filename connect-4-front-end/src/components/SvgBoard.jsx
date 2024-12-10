@@ -16,7 +16,7 @@ export default function SvgBoard({ board }) {
   const [hasRun, setHasRun] = React.useState(false);
 
   React.useEffect(() => {
-    if (hasRun) return
+    if (hasRun) return;
 
     const didWork = dropIntoPlace();
     setHasRun(true);
@@ -26,6 +26,14 @@ export default function SvgBoard({ board }) {
       setTimeout(dropIntoPlace(), 1000);
     }
   }, [hasRun]);
+
+  React.useEffect(() => {
+    console.log("board", board);
+  }, [board]);
+
+  if (!board.map) {
+    return <p>Error no board: {JSON.stringify(board)}</p>
+  } 
 
   return (
     <div className="svg-board-container">
@@ -37,11 +45,11 @@ export default function SvgBoard({ board }) {
       >
         {" "}
         {/* 585 */}
-        {board?.map((row, indexY) => {
+        {board.map((row, indexY) => {
           // 6 rows
           // 7 columns
           return (
-            <>
+            <g key={`${indexY}`}>
               {row?.map((value, indexX) => {
                 let fill =
                   value === NO_PLAYER
@@ -66,7 +74,7 @@ export default function SvgBoard({ board }) {
                   </g>
                 );
               })}
-            </>
+            </g>
           );
         })}
         <path
@@ -78,4 +86,5 @@ export default function SvgBoard({ board }) {
       </svg>
     </div>
   );
+  
 }

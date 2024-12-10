@@ -1,8 +1,11 @@
 import { BACKGROUND } from "./gameConst";
 
 export function dropPieces() {
+  console.log("Drop pieces")
   const boardPieces = document.getElementsByClassName("board-piece");
 
+  if (!boardPieces) return
+  
   // drop svg box so pieces have room
   dropSVGBox();
 
@@ -10,7 +13,7 @@ export function dropPieces() {
     const circle = piece.firstChild;
 
     // don't want to animate background pieces
-    if (circle.attributes.fill.value === BACKGROUND) {
+    if (!circle.attributes || circle.attributes.fill.value === BACKGROUND) {
       continue; // continue with the loop, just not for this piece
     }
 
@@ -22,6 +25,8 @@ export function dropPieces() {
 async function dropSVGBox() {
   const svgBox = document.getElementById("svg-box");
   let height = 620;
+
+  if (!svgBox) return;
 
   let interval = setInterval(() => {
     height += 5;
@@ -46,9 +51,6 @@ async function dropBoardPiece(piece, circle) {
 }
 
 async function rollBoardPiece(piece, circle) {
-  if (!circle || !circle.attributes) {
-    return
-  }
   let count = 0;
   let posX = Math.floor(circle.attributes.cx.value);
   let rollDirection = Math.random() < 0.5 ? -1 : 1;

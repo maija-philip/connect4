@@ -109,7 +109,7 @@ async function forfeit(username, gameId) {
 
   // set winner
   let winnerCode = game.playerPink === username ? 2 : 1
-  await db.setWinner(gameId, winnerCode, JSON.stringify({board: game.gameboard}));
+  await db.setWinner(gameId, winnerCode, game.gameboard);
 
   return {error: error.noError}
 }
