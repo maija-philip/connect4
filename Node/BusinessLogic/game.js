@@ -85,7 +85,7 @@ async function getGameMessages(gameId) {
     return { error: error.gameDNE };
   }
 
-  result = await db.getLobbyMessages();
+  result = await db.getGameMessages(gameId);
   return { error: error.noError, messages: result };
 }
 
@@ -109,7 +109,7 @@ async function forfeit(username, gameId) {
 
   // set winner
   let winnerCode = game.playerPink === username ? 2 : 1
-  await db.setWinner(gameId, winnerCode, game.gameboard);
+  await db.setWinner(gameId, winnerCode, JSON.stringify({board: game.gameboard}));
 
   return {error: error.noError}
 }

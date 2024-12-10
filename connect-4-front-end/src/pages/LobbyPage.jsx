@@ -159,7 +159,7 @@ export default function LobbyPage() {
         );
       };
       ws.current.onclose = () => {
-        getAPIData('/logout', API_METHODS.post, {})
+        getAPIData('session/logout', API_METHODS.post, {})
       };
 
       const wsCurrent = ws.current;

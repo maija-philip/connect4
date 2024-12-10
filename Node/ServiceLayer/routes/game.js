@@ -36,6 +36,7 @@ router.get("/:gameId/getMessages", async function (req, res) {
 
   if (result.error !== error.noError) {
     res.status(400).json({ error: result.error });
+    return;
   }
 
   res.status(200).json({ messages: result.messages });

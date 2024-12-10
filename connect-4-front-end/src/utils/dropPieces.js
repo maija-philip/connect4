@@ -46,6 +46,9 @@ async function dropBoardPiece(piece, circle) {
 }
 
 async function rollBoardPiece(piece, circle) {
+  if (!circle || !circle.attributes) {
+    return
+  }
   let count = 0;
   let posX = Math.floor(circle.attributes.cx.value);
   let rollDirection = Math.random() < 0.5 ? -1 : 1;

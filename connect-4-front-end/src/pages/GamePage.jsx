@@ -131,7 +131,7 @@ export default function GamePage() {
     getAPIData(`/game/${gameId}/forfeit`, API_METHODS.post, {}).then(() => {
       getAPIData(`/game/${gameId}/deleteGame`, API_METHODS.post, {}).then(
         () => {
-          getAPIData("/logout", API_METHODS.post, {});
+          getAPIData("/session/logout", API_METHODS.post, {});
         }
       );
     });
