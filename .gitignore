@@ -1,0 +1,4 @@
+**/node_modules
+.env
+deployService.sh
+.DS_Store
