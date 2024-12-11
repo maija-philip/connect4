@@ -54,6 +54,7 @@ export default function LobbyPage() {
       let result = await getAPIData("/session", API_METHODS.get, {});
       if (typeof result === 'object' && result.error) {
         navigate("/login");
+        return
       }
       setCurrentUser(result.username);
       setIsChatLoading(true);

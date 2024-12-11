@@ -22,6 +22,7 @@ export default function GameStatus({ opponent, isPink, isYourTurn, winner, gameI
     ) {
       setTitleColor(isPink ? "pink" : "yellow")
       setTitle(`You Won! ${opponent} forfeited the game`);
+      setDesc("")
       setShouldHaveLeaveButton(true)
       return;
     }
@@ -32,6 +33,7 @@ export default function GameStatus({ opponent, isPink, isYourTurn, winner, gameI
     ) {
       setTitleColor(isPink ? "pink" : "yellow")
       setTitle("You Won! Congratulations!");
+      setDesc("")
       setShouldHaveLeaveButton(true)
       return;
     }

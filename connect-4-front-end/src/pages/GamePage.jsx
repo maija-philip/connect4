@@ -11,7 +11,7 @@ import Board from "../components/Board";
 import { CircularProgress } from "@mui/material";
 import GameStatus from "../components/GameStatus";
 import GameChat from "../components/GameChat";
-import { delayedDropPieces, dropPieces } from "../utils/dropPieces";
+import { delayedDropPieces } from "../utils/dropPieces";
 
 export default function GamePage() {
   const { gameId } = useParams();
@@ -40,6 +40,7 @@ export default function GamePage() {
     const result = await getAPIData(`/game/${gameId}`, API_METHODS.get, {});
     if (!result || typeof result !== 'object' || result.error) {
       navigate("/");
+      return
     }
 
     // increaseAPICallCount();
@@ -144,49 +145,50 @@ export default function GamePage() {
     navigate("/");
   }, [gameId, navigate]);
 
-  // React.useEffect(() => {
-  //   if (apiCallCount > 200) {
-  //     endGame();
-  //   }
-  // }, [apiCallCount, endGame]);
+  React.useEffect(() => {
+    if (apiCallCount > 200) {
+      endGame();
+    }
+  }, [apiCallCount, endGame]);
 
-  // React.useEffect(() => {
-  //   function reloadGameOverAndOver() {
-  //     getAPIData(`/game/${gameId}`, API_METHODS.get, {}).then((result) => {
-  //       if (result.error) {
-  //         navigate("/");
-  //       }
+  React.useEffect(() => {
+    function reloadGameOverAndOver() {
+      getAPIData(`/game/${gameId}`, API_METHODS.get, {}).then((result) => {
+        if (result.error) {
+          navigate("/");
+          return
+        }
 
-  //       console.log("called api, count", apiCallCount);
-  //       increaseAPICallCount();
-  //       let game = result.game[0];
+        console.log("called api, count", apiCallCount, "winner", winner);
+        increaseAPICallCount();
+        let game = result.game[0];
 
-  //       if (
-  //         (game.turn === PLAYER_PINK && isPink) ||
-  //         (game.turn === PLAYER_YELLOW && !isPink)
-  //       ) {
-  //         setIsYourTurn(true);
-  //       } else {
-  //         setIsYourTurn(false);
-  //       }
+        if (
+          (game.turn === PLAYER_PINK && isPink) ||
+          (game.turn === PLAYER_YELLOW && !isPink)
+        ) {
+          setIsYourTurn(true);
+        } else {
+          setIsYourTurn(false);
+        }
 
-  //       if (game.winner !== NO_PLAYER) {
-  //         setWinner(game.winner);
-  //       }
+        if (game.winner !== NO_PLAYER) {
+          setWinner(game.winner);
+        }
 
-  //       setBoard(game.gameboard.board);
+        setBoard(game.gameboard.board);
 
-  //       // call the next one
-  //       if (apiCallCount < 200) {
-  //         timeout = setTimeout(reloadGameOverAndOver, 5000);
-  //       }
-  //     });
-  //   }
+        // call the next one
+        if (apiCallCount < 200 && winner === NO_PLAYER) {
+          timeout = setTimeout(reloadGameOverAndOver, 5000);
+        }
+      });
+    }
 
-  //   let timeout = setTimeout(reloadGameOverAndOver, 5000);
+    let timeout = setTimeout(reloadGameOverAndOver, 5000);
 
-  //   return (() => {clearTimeout(timeout)})
-  // })
+    return (() => {clearTimeout(timeout)})
+  },[apiCallCount, gameId, increaseAPICallCount, isPink, navigate, winner])
 
   return (
     <div className="gameWrap">

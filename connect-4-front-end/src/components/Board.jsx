@@ -40,6 +40,14 @@ export default function Board({ ws, board, isPink, isYourTurn, gameId, reloadGam
     dropPieces()
   }
 
+  React.useEffect(() => {
+    setIsPieceShown(isYourTurn)
+  }, [isYourTurn])
+
+  React.useEffect(() => {
+    console.log("Is piece shown?", isPieceShown, ", is your turn?", isYourTurn)
+  }, [isPieceShown, isYourTurn])
+
   return (
     <div className="board">
       {isLoading ? (
