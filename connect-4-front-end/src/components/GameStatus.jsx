@@ -4,6 +4,8 @@ import "../assets/css/styles.css";
 import { PLAYER_PINK, PLAYER_PINK_WINNING_SPOT, PLAYER_YELLOW, PLAYER_YELLOW_WINNING_SPOT } from "../utils/gameConst";
 import { useNavigate } from "react-router-dom";
 import { API_METHODS, getAPIData } from "../utils/callAPI";
+import { MESSAGE_TYPES, getRandomMessage } from "../utils/getRandomMessage";
+
 
 
 export default function GameStatus({ opponent, isPink, isYourTurn, winner, gameId }) {
@@ -22,7 +24,7 @@ export default function GameStatus({ opponent, isPink, isYourTurn, winner, gameI
     ) {
       setTitleColor(isPink ? "pink" : "yellow")
       setTitle(`You Won! ${opponent} forfeited the game`);
-      setDesc("")
+      setDesc(getRandomMessage(MESSAGE_TYPES.opponentForfeited))
       setShouldHaveLeaveButton(true)
       return;
     }
@@ -33,7 +35,7 @@ export default function GameStatus({ opponent, isPink, isYourTurn, winner, gameI
     ) {
       setTitleColor(isPink ? "pink" : "yellow")
       setTitle("You Won! Congratulations!");
-      setDesc("")
+      setDesc(getRandomMessage(MESSAGE_TYPES.youWon))
       setShouldHaveLeaveButton(true)
       return;
     }
@@ -44,14 +46,14 @@ export default function GameStatus({ opponent, isPink, isYourTurn, winner, gameI
     ) {
       setTitleColor(isPink ? "yellow" : "pink")
       setTitle(`You forfeited the game, ${opponent} won`);
-      setDesc("Try to finish the game next time")
+      setDesc(getRandomMessage(MESSAGE_TYPES.youForfeited))
       setShouldHaveLeaveButton(true)
       return;
     }
     if (winner) {
       setTitleColor(isPink ? "yellow" : "pink")
       setTitle(`${opponent} Won!`);
-      setDesc("Wanna play another game?")
+      setDesc(getRandomMessage(MESSAGE_TYPES.opponentWon))
       setShouldHaveLeaveButton(true)
       return;
     }
@@ -64,7 +66,7 @@ export default function GameStatus({ opponent, isPink, isYourTurn, winner, gameI
     }
     setTitleColor(isPink ? "yellow" : "pink")
     setTitle(`${opponent}'s Turn`);
-    setDesc("Waiting them to complete their move")
+    setDesc(getRandomMessage(MESSAGE_TYPES.opponentPlaying))
     setShouldHaveLeaveButton(false)
   }, [isPink, isYourTurn, opponent, winner]);
 

@@ -10,6 +10,7 @@ const express = require("express");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const helmet = require("helmet")
 // var MemoryStore = session.MemoryStore;
 
 const { MIN_30, HOUR_1 } = require("../constants.js");
@@ -18,6 +19,18 @@ const app = express();
 app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded());
+// This sets custom options for the
+// Content-Security-Policy header.
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        "script-src": ["'self'", "maija.xyz"],
+      },
+    },
+  })
+);
+
 
 app.use(
   cors({
