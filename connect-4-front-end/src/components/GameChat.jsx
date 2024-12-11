@@ -22,7 +22,9 @@ export default function GameChat({ ws, gameId, isPink }) {
 
       // GET LOBBY MESSAGES
       const result = await getAPIData(`/game/${gameId}/getMessages`, API_METHODS.get, {});
-      setMessages(result.messages);
+      if (typeof result !== 'object' && !result.error) {
+        setMessages(result.messages);
+      }
       setIsChatLoading(false);
     }
 

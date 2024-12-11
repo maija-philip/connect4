@@ -1,11 +1,18 @@
 import { BACKGROUND } from "./gameConst";
 
+export function delayedDropPieces() {
+  setTimeout(dropPieces, 1000);
+}
+
 export function dropPieces() {
   console.log("Drop pieces")
   const boardPieces = document.getElementsByClassName("board-piece");
 
-  if (!boardPieces) return
-  
+  if (!boardPieces) {
+    console.log('bailing....no board pieces')
+    return
+  }
+
   // drop svg box so pieces have room
   dropSVGBox();
 
@@ -26,7 +33,10 @@ async function dropSVGBox() {
   const svgBox = document.getElementById("svg-box");
   let height = 620;
 
-  if (!svgBox) return;
+  if (!svgBox) {
+    console.log("[dropSVGBox] no svg box", svgBox)
+    return
+  };
 
   let interval = setInterval(() => {
     height += 5;
@@ -38,6 +48,8 @@ async function dropSVGBox() {
 }
 
 async function dropBoardPiece(piece, circle) {
+  // console.log("[dropBoardPiece] piece", piece, ", circle", circle)
+
   let height = Math.floor(circle.attributes.cy.value);
 
   let interval = setInterval(() => {
@@ -51,6 +63,8 @@ async function dropBoardPiece(piece, circle) {
 }
 
 async function rollBoardPiece(piece, circle) {
+  // console.log("[rollBoardPiece] piece", piece, ", circle", circle)
+
   let count = 0;
   let posX = Math.floor(circle.attributes.cx.value);
   let rollDirection = Math.random() < 0.5 ? -1 : 1;

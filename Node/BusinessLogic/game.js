@@ -109,7 +109,7 @@ async function forfeit(username, gameId) {
 
   // set winner
   let winnerCode = game.playerPink === username ? 2 : 1
-  await db.setWinner(gameId, winnerCode, game.gameboard);
+  await db.setWinner(gameId, winnerCode, JSON.stringify(game.gameboard));
 
   return {error: error.noError}
 }
@@ -129,8 +129,10 @@ async function deleteGame(username, gameId) {
     return { error: error.canNotDeleteInProgressGame }
   }
 
-  db.deleteGame(gameId);
-  db.deleteGameMessages(gameId);
+  await db.deleteGame(gameId);
+  await db.deleteGameMessages(gameId);
+
+  return {error: error.noError}
 }
 
 module.exports = {

@@ -11,6 +11,7 @@ import Board from "../components/Board";
 import { CircularProgress } from "@mui/material";
 import GameStatus from "../components/GameStatus";
 import GameChat from "../components/GameChat";
+import { delayedDropPieces, dropPieces } from "../utils/dropPieces";
 
 export default function GamePage() {
   const { gameId } = useParams();
@@ -37,13 +38,12 @@ export default function GamePage() {
    */
   const getGameData = React.useCallback(async () => {
     const result = await getAPIData(`/game/${gameId}`, API_METHODS.get, {});
-    if (!result || result.error) {
+    if (!result || typeof result !== 'object' || result.error) {
       navigate("/");
     }
 
     // increaseAPICallCount();
     let game = result.game[0];
-    console.log(game);
 
     if (
       (game.turn === PLAYER_PINK && isPink) ||
@@ -61,6 +61,11 @@ export default function GamePage() {
     setBoard(game.gameboard.board);
 
     // console.log("Game Data: ", game);
+
+    // did a player forfeit? 
+    if (game.winner === PLAYER_PINK || game.winner === PLAYER_YELLOW) {
+      delayedDropPieces()
+    }
 
     return game;
   },[gameId, isPink, navigate]);
@@ -183,11 +188,6 @@ export default function GamePage() {
   //   return (() => {clearTimeout(timeout)})
   // })
 
-  React.useEffect(() => {
-    console.log("here board", board);
-    console.log("is board?", board ? "true" : "false");
-  }, [board]);
-
   return (
     <div className="gameWrap">
       {isLoading ? (
@@ -200,8 +200,7 @@ export default function GamePage() {
             <span className={isPink ? "pink" : "yellow"}>{currentUser}</span> vs{" "}
             <span className={isPink ? "yellow" : "pink"}>{opponent}</span>
           </h1>
-          {board ? (
-            <Board
+          <Board
               ws={ws}
               board={board}
               isPink={isPink}
@@ -209,9 +208,6 @@ export default function GamePage() {
               gameId={gameId}
               reloadGame={getGameData}
             />
-          ) : (
-            <p>No board to display</p>
-          )}
           <GameStatus
             opponent={opponent}
             isPink={isPink}

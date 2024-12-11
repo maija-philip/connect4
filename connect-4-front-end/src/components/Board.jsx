@@ -37,21 +37,8 @@ export default function Board({ ws, board, isPink, isYourTurn, gameId, reloadGam
 
   const forfeit = async () => {
     await takeTurn('forfeit', {})
-    // dropPieces()
+    dropPieces()
   }
-
-  React.useEffect(() => {
-    setIsPieceShown(isYourTurn)
-  }, [isYourTurn])
-
-  React.useEffect(() => {
-    console.log("Is piece shown?", isPieceShown, ", is your turn?", isYourTurn)
-  }, [isPieceShown, isYourTurn])
-
-  React.useEffect(() => {
-    console.log("Board b", board)
-    console.log("Board exist here?", (board ? 'true' : 'false'))
-  }, [board])
 
   return (
     <div className="board">
@@ -62,7 +49,7 @@ export default function Board({ ws, board, isPink, isYourTurn, gameId, reloadGam
       ) : (
         <>
           {moveErr !== "" ? <p className="red">{moveErr}</p> : <></>}
-          {board ? <SvgBoard board={board} /> : <p>Error: can not display board</p>}
+          <SvgBoard board={board} />
           <img
             id="drop-pieces-button"
             src={dropBoardButton}

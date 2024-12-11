@@ -27,11 +27,7 @@ export default function SvgBoard({ board }) {
     }
   }, [hasRun]);
 
-  React.useEffect(() => {
-    console.log("board", board);
-  }, [board]);
-
-  if (!board.map) {
+  if (!board || typeof board !== 'object') {
     return <p>Error no board: {JSON.stringify(board)}</p>
   } 
 

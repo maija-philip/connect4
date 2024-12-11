@@ -146,7 +146,7 @@ async function checkIfWinner(gameId, board, lastMove, playerKey) {
     board[move.y][move.x] = winningPieceCode;
   });
 
-  await db.setWinner(gameId, playerKey, JSON.stringify({ board: board }));
+  await db.setWinner(gameId, winningPieceCode, JSON.stringify({ board: board }));
 
   return true;
 }

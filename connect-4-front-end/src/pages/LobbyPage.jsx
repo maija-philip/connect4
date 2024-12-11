@@ -52,7 +52,7 @@ export default function LobbyPage() {
     async function fetchData() {
       // GET SESSION + SET CURRENT USER
       let result = await getAPIData("/session", API_METHODS.get, {});
-      if (result.error) {
+      if (typeof result === 'object' && result.error) {
         navigate("/login");
       }
       setCurrentUser(result.username);

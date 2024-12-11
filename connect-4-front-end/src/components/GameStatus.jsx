@@ -1,7 +1,7 @@
 import * as React from "react";
 import "../assets/css/constants.css";
 import "../assets/css/styles.css";
-import { PLAYER_PINK, PLAYER_YELLOW } from "../utils/gameConst";
+import { PLAYER_PINK, PLAYER_PINK_WINNING_SPOT, PLAYER_YELLOW, PLAYER_YELLOW_WINNING_SPOT } from "../utils/gameConst";
 import { useNavigate } from "react-router-dom";
 import { API_METHODS, getAPIData } from "../utils/callAPI";
 
@@ -21,7 +21,28 @@ export default function GameStatus({ opponent, isPink, isYourTurn, winner, gameI
         (winner === PLAYER_YELLOW && !isPink))
     ) {
       setTitleColor(isPink ? "pink" : "yellow")
+      setTitle(`You Won! ${opponent} forfeited the game`);
+      setShouldHaveLeaveButton(true)
+      return;
+    }
+    if (
+      winner && 
+      ((winner === PLAYER_PINK_WINNING_SPOT && isPink) ||
+      (winner === PLAYER_YELLOW_WINNING_SPOT && !isPink))
+    ) {
+      setTitleColor(isPink ? "pink" : "yellow")
       setTitle("You Won! Congratulations!");
+      setShouldHaveLeaveButton(true)
+      return;
+    }
+    if (
+      winner && 
+      ((winner === PLAYER_PINK && !isPink) ||
+      (winner === PLAYER_YELLOW && isPink))
+    ) {
+      setTitleColor(isPink ? "yellow" : "pink")
+      setTitle(`You forfeited the game, ${opponent} won`);
+      setDesc("Try to finish the game next time")
       setShouldHaveLeaveButton(true)
       return;
     }
